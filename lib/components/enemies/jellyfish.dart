@@ -18,9 +18,9 @@ class JellyFish extends AnimationComponent with HasGameRef<ScubaManGame> {
 
     y -= 15 * t; 
 
-    if (gameRef.scubaMan != null && gameRef.scubaMan.toRect().overlaps(toRect())) {
-      collisionAttack(); 
-    }
+    // if (gameRef.world.scuba.toRect().overlaps(toRect())) {
+    //   collisionAttack(); 
+    // }
   }
 
   collisionAttack() {

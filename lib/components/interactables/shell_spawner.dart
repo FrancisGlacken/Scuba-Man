@@ -17,8 +17,7 @@ class ShellSpawner extends Component with HasGameRef<ScubaManGame> {
     timer = Timer(5, repeat: true, callback: () {
       gameRef.add(
         Shell(
-          rng.nextInt(gameRef.size.width.toInt()).toDouble(),
-          0));
+          rng.nextInt(gameRef.size.width.toInt()).toDouble(), 0));
     });
     timer.start();
   }

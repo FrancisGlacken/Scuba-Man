@@ -66,16 +66,16 @@ class PlayerScuba extends AnimationComponent with HasGameRef<ScubaManGame> {
     // Handles CollisionDetection
     if (x <= 15) {
       x = 16;
-      //swimForceLeft = 5;
+      if (swimForceLeft > 0) { swimForceLeft = 0; }
     } else if (x >= gameRef.size.width - 15) {
       x = gameRef.size.width - 16;
-      //swimForceRight = 5;
+      if (swimForceRight > 0) { swimForceRight = 0; }
     } else if (y <= 23) {
       y = 24;
-      //swimForceUp = 5;
+      if (swimForceUp > 0) { swimForceUp = 0; }
     } else if (y >= gameRef.size.height - 23) {
       y = gameRef.size.height - 24;
-      //swimForceDown = 5;
+      if (swimForceDown > 0) { swimForceDown = 0; }
     }
   }
 }

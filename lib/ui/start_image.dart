@@ -11,7 +11,7 @@ class StartImage extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Image.asset(
-          'assets/images/start-game.png',
+          'assets/images/start_game.png',
         ),
       ),
     );

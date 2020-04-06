@@ -7,7 +7,6 @@ import 'package:scuba_man/components/interactables/shell_spawner.dart';
 import 'package:scuba_man/scuba_man_game.dart';
 import 'package:scuba_man/ui/swim_up.dart';
 import 'ui_screens.dart';
-import 'package:scuba_man/components/player/player_scuba.dart';
 import 'package:scuba_man/ui/high_score.dart';
 import 'package:scuba_man/ui/title_image.dart';
 import 'package:scuba_man/ui/start_button.dart';
@@ -75,24 +74,29 @@ class ScubaManUIState extends State<ScubaManUI> with WidgetsBindingObserver {
 
   void toGameScreen() {
     setState(() {
-      game.add(game.scubaMan = PlayerScuba());
+      game.playGameBGM();
       game.add(JellyfishSpawner());
       game.add(SharkSpawner());
       game.add(FishySpawner());
       game.add(ShellSpawner());
       currentScreen = UIScreen.game;
+      spawnScuba(); 
     });
+    //spawnScuba(); 
   }
 
   void toTitleScreen() {
     setState(() {
+      game.playHomeBGM();
       score = 0;
       health = 3;
-      game.components.remove(game.scubaMan);
-      currentScreen = UIScreen.title;
       game.components.clear();
       game.add(Ocean());
+
+      currentScreen = UIScreen.title;
+      despawnScuba();
     });
+    //despawnScuba(); 
   }
 
   void updateScoreForShell() {
@@ -134,7 +138,11 @@ class ScubaManUIState extends State<ScubaManUI> with WidgetsBindingObserver {
   }
 
 
-  swimUpOnClick() {
-    game.scubaMan.swimForceUp -= 25;
+  void spawnScuba() { 
+    game.world.spawnScuba(); 
+  }
+
+  void despawnScuba() {
+    game.world.despawnScuba(); 
   }
 }

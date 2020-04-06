@@ -23,12 +23,34 @@ void main() async {
   final size = await Flame.util.initialDimensions();
 
   // await Flame.images.loadAll(<String>[
-  //   'assets/images/bg_ocean.png'
+  //   'assets/images/bg_ocean.png',
+  //   'assets/images/health_bar_0.png',
+  //   'assets/images/health_bar_1.png',
+  //   'assets/images/health_bar_2.png',
+  //   'assets/images/health_bar_3.png',
+  //   'assets/images/quit_game.png',
+  //   'assets/images/sprite_scuba_man.png',
+  //   'assets/images/sprite_sheet_bubble.png',
+  //   'assets/images/sprite_sheet_fishy.png',
+  //   'assets/images/sprite_sheet_jellyfish.png',
+  //   'assets/images/sprite_sheet_shell.png',
+  //   'assets/images/sprite_shark.png',
+  //   'assets/images/start_game.png',
+  //   'assets/images/sprite_sheet_shell.png',
+  //   'assets/images/swim_up.png',
+  //   'assets/images/swim_left.png',
+  //   'assets/images/swim_right.png',
+  //   'assets/images/title.png',
   // ]);
+
+  Flame.audio.disableLog();
+  await Flame.audio
+      .loadAll(<String>['bgm/ecco_title_gg.mp3', 'bgm/password_mmx.mp3']);
+
   ScubaManUI gameUI = ScubaManUI();
   ScubaManGame game = ScubaManGame(size, gameUI.state);
   gameUI.state.game = game;
-  runApp(game.widget);
+  // runApp(game.widget);
 
   runApp(MaterialApp(
     title: 'Scuba Man',
@@ -37,20 +59,20 @@ void main() async {
       fontFamily: 'HVD',
     ),
     home: Scaffold(
-      resizeToAvoidBottomPadding: false,
+        resizeToAvoidBottomPadding: false,
         body: Stack(
-      fit: StackFit.expand,
-      children: <Widget>[
-        Positioned.fill(
-          child: GestureDetector(
-            behavior: HitTestBehavior.opaque,
-            onTapDown: game.onTapDown,
-            child: game.widget,
-          ),
-        ),
-        Positioned.fill(child: gameUI)
-      ],
-    )),
+          fit: StackFit.expand,
+          children: <Widget>[
+            Positioned.fill(
+              child: GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTapDown: game.onTapDown,
+                child: game.widget,
+              ),
+            ),
+            Positioned.fill(child: gameUI)
+          ],
+        )),
     debugShowCheckedModeBanner: false,
   ));
 }

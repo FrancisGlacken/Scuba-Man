@@ -16,7 +16,7 @@ class SwimUp extends StatelessWidget with HasGameRef<ScubaManGame> {
           right: 8,
           child: FlatButton(
         onPressed: () {
-          state.swimUpOnClick();
+          //state.swimUpOnClick();
         },
       child: Image.asset('assets/images/swim_up.png')),
     );

@@ -29,43 +29,41 @@ dependencies:
 
   cupertino_icons: ^0.1.2
 
-  
-
 dev_dependencies:
   flutter_test:
     sdk: flutter
   hive_generator: ^0.7.0
   build_runner:
 
-
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
 # The following section is specific to Flutter.
 flutter:
-
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
-  
-  assets: 
-  - assets/images/cheep-green.png
-  - assets/images/cheep-white.png
-  - assets/images/bg_ocean.png
-  - assets/images/title.png
-  - assets/images/start-game.png
-  - assets/images/quit-game.png
-  - assets/images/sprite_sheet_jellyfish.png
-  - assets/images/sprite_scuba_man.png
-  - assets/images/sprite_sheet_fishy.png
-  - assets/images/sprite_sheet_bubble.png
-  - assets/images/sprite_sheet_shell.png
-  - assets/images/sprite-shark.png
-  - assets/images/health_bar_0.png
-  - assets/images/health_bar_1.png
-  - assets/images/health_bar_2.png
-  - assets/images/health_bar_3.png
-  - assets/images/swim_left.png
-  - assets/images/swim_right.png
-  - assets/images/swim_up.png
+
+  assets:
+    - assets/images/cheep-green.png
+    - assets/images/cheep-white.png
+    - assets/images/bg_ocean.png
+    - assets/images/title.png
+    - assets/images/start_game.png
+    - assets/images/quit_game.png
+    - assets/images/sprite_sheet_jellyfish.png
+    - assets/images/sprite_scuba_man.png
+    - assets/images/sprite_sheet_fishy.png
+    - assets/images/sprite_sheet_bubble.png
+    - assets/images/sprite_sheet_shell.png
+    - assets/images/sprite-shark.png
+    - assets/images/health_bar_0.png
+    - assets/images/health_bar_1.png
+    - assets/images/health_bar_2.png
+    - assets/images/health_bar_3.png
+    - assets/images/swim_left.png
+    - assets/images/swim_right.png
+    - assets/images/swim_up.png
+    - assets/audio/bgm/password_mmx.mp3
+    - assets/audio/bgm/ecco_title_gg.mp3

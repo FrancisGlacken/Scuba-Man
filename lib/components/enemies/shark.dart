@@ -23,13 +23,13 @@ class Shark extends AnimationComponent with HasGameRef<ScubaManGame> {
 
     x -= 100 * t;
 
-    if (gameRef.scubaMan != null &&
-        gameRef.scubaMan.toRect().overlaps(toRect())) {
-      collisionAttack();
-      if (gameRef.uiState.health == 0) {
-        gameRef.uiState.toTitleScreen();
-      }
-    }
+    // if (gameRef.scubaMan != null &&
+    //     gameRef.scubaMan.toRect().overlaps(toRect())) {
+    //   collisionAttack();
+    //   if (gameRef.uiState.health == 0) {
+    //     gameRef.uiState.toTitleScreen();
+    //   }
+    // }
   }
 
   collisionAttack() {

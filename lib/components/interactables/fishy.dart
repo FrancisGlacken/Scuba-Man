@@ -19,9 +19,9 @@ class Fishy extends AnimationComponent with HasGameRef<ScubaManGame> {
 
     x -= 50 * t;
 
-    if (gameRef.scubaMan != null && gameRef.scubaMan.toRect().overlaps(toRect())) {
-      collisionCollect(); 
-    }
+    // if (gameRef.scubaMan != null && gameRef.scubaMan.toRect().overlaps(toRect())) {
+    //   collisionCollect(); 
+    // }
   }
 
   void collisionCollect() {

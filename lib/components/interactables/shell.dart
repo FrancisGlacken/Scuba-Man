@@ -18,9 +18,9 @@ class Shell extends AnimationComponent with HasGameRef<ScubaManGame> {
 
     y += 15 * t; 
 
-    if (gameRef.scubaMan != null && gameRef.scubaMan.toRect().overlaps(toRect())) {
-      collisionCollect(); 
-    }
+    // if (gameRef.scubaMan != null && gameRef.scubaMan.toRect().overlaps(toRect())) {
+    //   collisionCollect(); 
+    // }
   }
 
   void collisionCollect() {

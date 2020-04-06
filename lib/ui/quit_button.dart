@@ -15,7 +15,7 @@ class QuitButton extends StatelessWidget {
             state.toTitleScreen();
           },
           child: Image.asset(
-            'assets/images/quit-game.png'
+            'assets/images/quit_game.png'
           ),
         ));
   }
