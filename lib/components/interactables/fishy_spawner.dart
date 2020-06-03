@@ -12,12 +12,10 @@ class FishySpawner extends Component with HasGameRef<ScubaManGame> {
   Timer timer;
   Random rng = Random(); 
 
+
   FishySpawner() {
-    timer = Timer(5, repeat: true, callback: () {
-      gameRef.add(
-        Fishy(
-          gameRef.size.width,
-          rng.nextInt(gameRef.size.height.toInt()).toDouble()));
+    timer = Timer(3, repeat: true, callback: () {
+      gameRef.world.spawnFishy(Fishy(gameRef.world, 100, rng.nextInt(180).toDouble()));
     });
     timer.start();
   }

@@ -10,14 +10,11 @@ import 'dart:math';
 class ShellSpawner extends Component with HasGameRef<ScubaManGame> {
   
   Timer timer;
-  var trash; 
   Random rng = Random(); 
-
+  
   ShellSpawner() {
     timer = Timer(5, repeat: true, callback: () {
-      gameRef.add(
-        Shell(
-          rng.nextInt(gameRef.size.width.toInt()).toDouble(), 0));
+      gameRef.world.spawnShell(Shell(gameRef.world, 0, 0));
     });
     timer.start();
   }
@@ -25,7 +22,6 @@ class ShellSpawner extends Component with HasGameRef<ScubaManGame> {
   @override
   void update(double t) {
     timer.update(t); 
-    //this is deleted now
   }
 
   @override

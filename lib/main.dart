@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flame/flame.dart';
+import 'package:scuba_man/components/box2d/scuba_world.dart';
 import 'package:scuba_man/scuba_man_game.dart';
 import 'package:flame/util.dart';
 import 'package:flutter/services.dart';
@@ -48,7 +49,8 @@ void main() async {
       .loadAll(<String>['bgm/ecco_title_gg.mp3', 'bgm/password_mmx.mp3']);
 
   ScubaManUI gameUI = ScubaManUI();
-  ScubaManGame game = ScubaManGame(size, gameUI.state);
+  ScubaWorld box = ScubaWorld(); 
+  ScubaManGame game = ScubaManGame(box, size, gameUI.state);
   gameUI.state.game = game;
   // runApp(game.widget);
 
@@ -64,12 +66,8 @@ void main() async {
           fit: StackFit.expand,
           children: <Widget>[
             Positioned.fill(
-              child: GestureDetector(
-                behavior: HitTestBehavior.opaque,
-                onTapDown: game.onTapDown,
-                child: game.widget,
+              child: game.widget,
               ),
-            ),
             Positioned.fill(child: gameUI)
           ],
         )),

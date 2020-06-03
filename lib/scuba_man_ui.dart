@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:scuba_man/components/background-ocean.dart';
-import 'package:scuba_man/components/enemies/jellyfish_spawner.dart';
-import 'package:scuba_man/components/enemies/shark_spawner.dart';
 import 'package:scuba_man/components/interactables/fishy_spawner.dart';
 import 'package:scuba_man/components/interactables/shell_spawner.dart';
 import 'package:scuba_man/scuba_man_game.dart';
-import 'package:scuba_man/ui/swim_up.dart';
 import 'ui_screens.dart';
 import 'package:scuba_man/ui/high_score.dart';
 import 'package:scuba_man/ui/title_image.dart';
@@ -23,6 +19,8 @@ class ScubaManUIState extends State<ScubaManUI> with WidgetsBindingObserver {
   UIScreen currentScreen = UIScreen.title;
   int score = 0;
   int health = 3;
+  FishySpawner fishySpawner; 
+  ShellSpawner shellSpawner; 
 
   void initState() {
     super.initState();
@@ -67,7 +65,6 @@ class ScubaManUIState extends State<ScubaManUI> with WidgetsBindingObserver {
         HealthBar(returnHealthImageKey(health)),
         HighScore(score),
         QuitButton(this),
-        SwimUp(this)
       ]),
     );
   }
@@ -75,12 +72,14 @@ class ScubaManUIState extends State<ScubaManUI> with WidgetsBindingObserver {
   void toGameScreen() {
     setState(() {
       game.playGameBGM();
-      game.add(JellyfishSpawner());
-      game.add(SharkSpawner());
-      game.add(FishySpawner());
-      game.add(ShellSpawner());
       currentScreen = UIScreen.game;
+      // game.add(JellyfishSpawner());
+      // game.add(SharkSpawner());
+      // game.add(ShellSpawner());
+      game.add(fishySpawner = FishySpawner());
+      //game.add(shellSpawner = ShellSpawner()); 
       spawnScuba(); 
+      //game.world.spawnFishy(); 
     });
     //spawnScuba(); 
   }
@@ -90,13 +89,14 @@ class ScubaManUIState extends State<ScubaManUI> with WidgetsBindingObserver {
       game.playHomeBGM();
       score = 0;
       health = 3;
-      game.components.clear();
-      game.add(Ocean());
+      game.components.remove(fishySpawner); 
+      //game.components.clear();
+      //game.add(Ocean());
 
       currentScreen = UIScreen.title;
       despawnScuba();
-    });
-    //despawnScuba(); 
+      game.world.despawnFishies(); 
+    }); 
   }
 
   void updateScoreForShell() {

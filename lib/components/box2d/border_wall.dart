@@ -17,7 +17,7 @@ class BorderWall {
   List<BodyComponent> get bodies => _bodies;
 }
 
-class BorderBody extends BodyComponent {
+class BorderBody extends BodyComponent with HasGameRef<ScubaManGame> {
   Orientation orientation;
   double widthPercent;
   double heightPercent;
@@ -40,15 +40,23 @@ class BorderBody extends BodyComponent {
 
     final shape = PolygonShape();
     shape.setAsBoxXY(width, height);
-    final fixtureDef = FixtureDef();
-    fixtureDef.shape = shape;
 
-    fixtureDef.restitution = 0.0;
-    fixtureDef.friction = 0.2;
     final bodyDef = BodyDef();
     bodyDef.position = Vector2(x / 2, y / 2);
+    bodyDef.userData = this; 
+
+    final fixtureDef = FixtureDef();
+    fixtureDef.shape = shape;
+    fixtureDef.restitution = 0.0;
+    fixtureDef.friction = 0.2;
+    fixtureDef.userData = "wall"; 
+
     Body groundBody = world.createBody(bodyDef);
     groundBody.createFixtureFromFixtureDef(fixtureDef);
     this.body = groundBody;
+  }
+
+  void impact() {
+    //gameRef.toTitle();
   }
 }

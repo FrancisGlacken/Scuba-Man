@@ -7,11 +7,10 @@ import 'package:scuba_man/utils.dart';
 import 'dart:math';
 
 class Scuba extends BodyComponent {
-  static const num BALL_RADIUS = 16.0; 
+  static const num BALL_RADIUS = 8.0; 
   Random rng = new Random(); 
   Random rngCharge = new Random(); 
   double posX, posY, chargeX = 1, chargeY = 1;  
-  var random;
 
   ImagesLoader images = new ImagesLoader(); 
 
@@ -20,7 +19,6 @@ class Scuba extends BodyComponent {
     posY = y; 
     _loadImages();
     _createBody();
-    random = rng.nextInt(4); 
   }
 
   void _loadImages() {
@@ -40,15 +38,14 @@ class Scuba extends BodyComponent {
 
   _createBody() {
     //Create Body
-    final activeBodyDef = new BodyDef();
+    final bodyDef = new BodyDef();
 
     if (rng.nextBool()) chargeX = chargeX * -1;
     if (rng.nextBool()) chargeY = chargeY * -1;
-    activeBodyDef.linearVelocity = new Vector2(rng.nextDouble() * 200 * chargeX, rng.nextDouble() * 200 * chargeY);
-    activeBodyDef.position = new Vector2(posX, posY);
-    activeBodyDef.type = BodyType.DYNAMIC;
-    activeBodyDef.bullet = true;
-    BodyDef bodyDef = activeBodyDef; 
+    bodyDef.position = new Vector2(posX, posY);
+    bodyDef.type = BodyType.DYNAMIC;
+    bodyDef.bullet = true;
+    bodyDef.userData = this; 
 
     //Create SHape
     final shape = new CircleShape(); 
@@ -56,14 +53,14 @@ class Scuba extends BodyComponent {
     shape.p.x = 0.0; 
 
     // Create Fixture which is the thing that holds the physics
-    final activeFixtureDef = new FixtureDef();
-    activeFixtureDef.shape = shape; 
-    activeFixtureDef.restitution = 0.7;
-    activeFixtureDef.density = 0.05;
-    activeFixtureDef.friction = 0.2;
-    FixtureDef fixtureDef = activeFixtureDef;
+    final fixtureDef = new FixtureDef();
+    fixtureDef.shape = shape; 
+    fixtureDef.restitution = 0.7;
+    fixtureDef.density = .1;
+    fixtureDef.friction = 0.2;
+    fixtureDef.userData = this; 
     
-
+  
     this.body = world.createBody(bodyDef)..createFixtureFromFixtureDef(fixtureDef);
   }
 
@@ -77,11 +74,11 @@ class Scuba extends BodyComponent {
   }
 
   void handleDragEnd(DragEndDetails details) {
-    impulse(details.velocity.pixelsPerSecond); 
+    //impulse(details.velocity.pixelsPerSecond); 
   }
 
   void impulse(Offset velocity) {
-    Vector2 force = new Vector2(velocity.dx, -velocity.dy)..scale(100.0);
+    Vector2 force = new Vector2(velocity.dx * 3, -velocity.dy * 4)..scale(2.0);
     body.applyLinearImpulse(force, center, true);
   }
 
