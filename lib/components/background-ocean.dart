@@ -14,6 +14,4 @@ class Ocean extends ParallaxComponent with HasGameRef<ScubaManGame>{
   ];
 
   Ocean() : super(images, baseSpeed: const Offset(2, 0), layerDelta: const Offset(5, 0));
-
-  
 }

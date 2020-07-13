@@ -1,5 +1,4 @@
 import 'package:flame/components/mixins/has_game_ref.dart';
-import 'package:scuba_man/components/box2d/border_wall.dart';
 import 'package:scuba_man/components/interactables/shell.dart';
 import 'package:scuba_man/components/player/scuba.dart';
 import 'package:scuba_man/components/interactables/fishy.dart';

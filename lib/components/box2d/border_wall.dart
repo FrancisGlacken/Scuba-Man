@@ -17,7 +17,7 @@ class BorderWall {
   List<BodyComponent> get bodies => _bodies;
 }
 
-class BorderBody extends BodyComponent with HasGameRef<ScubaManGame> {
+class BorderBody extends BodyComponent {
   Orientation orientation;
   double widthPercent;
   double heightPercent;

@@ -12,7 +12,6 @@ import 'package:scuba_man/scuba_man_ui.dart';
 import 'package:scuba_man/components/enemies/jellyfish.dart';
 import 'package:flutter/gestures.dart';
 import 'package:audioplayers/audioplayers.dart';
-import 'package:box2d_flame/box2d.dart' hide Timer;
 import 'package:flame/box2d/box2d_game.dart';
 
 class ScubaManGame extends Box2DGame with PanDetector {
