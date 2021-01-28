@@ -1,25 +1,48 @@
 import 'package:flame/components/component.dart';
 import 'package:flame/components/mixins/has_game_ref.dart';
-import 'package:flame/time.dart';
+import 'package:flame/extensions/vector2.dart';
+import 'package:flame/sprite_animation.dart';
+import 'package:flame/timer.dart';
 import 'package:scuba_man/components/enemies/shark.dart';
-import 'package:scuba_man/scuba_man_game.dart';
 
 import 'dart:ui';
 import 'dart:math';
 
-class SharkSpawner extends Component with HasGameRef<ScubaManGame> {
-  
+import 'package:scuba_man/scuba_game.dart';
+
+class SharkSpawner extends Component with HasGameRef<ScubaGame>{
   Timer timer;
   Random rng = Random(); 
+  bool isDestroyed = false; 
+  Image sharkImage; 
+  SpriteAnimation sharkAnim;
+  Shark shark; 
 
   SharkSpawner() {
-    timer = Timer(3, repeat: true, callback: () {
-      gameRef.add(
-        Shark(
-          gameRef.size.width,
-          rng.nextInt(gameRef.size.height.toInt()).toDouble()));
+    timer = Timer(8, repeat: true, callback: () {
+      shark = Shark(Vector2.all(32), sharkAnim);
+      shark.x = gameRef.size.x;
+      shark.y = gameRef.size.y * rng.nextDouble();
+      gameRef.add(shark);
     });
     timer.start();
+  }
+
+  @override
+  Future<void> onLoad() async {
+    // TODO: implement onLoad
+    sharkImage = await gameRef.images.load('sprite_shark.png');
+
+    sharkAnim = SpriteAnimation.fromFrameData(
+      sharkImage,
+      SpriteAnimationData.sequenced(
+        amount: 1,
+        textureSize: Vector2.all(32),
+        stepTime: 1,
+        loop: false,
+      ),
+    );
+    return super.onLoad();
   }
 
   @override
@@ -29,5 +52,15 @@ class SharkSpawner extends Component with HasGameRef<ScubaManGame> {
 
   @override
   void render(Canvas c) {
+  }
+
+
+  void destroy() {
+    shouldRemove = true; 
+  }
+
+  void destroyed() {
+    timer.stop(); 
+    isDestroyed = true; 
   }
 }

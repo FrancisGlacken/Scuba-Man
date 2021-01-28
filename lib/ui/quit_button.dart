@@ -1,22 +1,50 @@
-import 'package:flutter/material.dart';
-import 'package:scuba_man/scuba_man_ui.dart';
+// import 'package:flutter/material.dart';
+// import 'package:scuba_man/components/player/scuba.dart';
+// import 'package:scuba_man/scuba_game.dart';
 
-class QuitButton extends StatelessWidget {
-  final ScubaManUIState state; 
-  QuitButton(this.state);
 
-  @override
-  Widget build(BuildContext context) {
-    return Positioned(
-        right: 0,
-        bottom: 0,
-        child: FlatButton(
-          onPressed: () {
-            state.toTitleScreen();
-          },
-          child: Image.asset(
-            'assets/images/quit_game.png'
-          ),
-        ));
-  }
-}
+// // class QuitButton extends StatefulWidget {
+// //   final ScubaGame game; 
+// //   QuitButton(this.game);
+
+// //   @override
+// //   _QuitButtonState createState() => _QuitButtonState(game);
+// // }
+
+// // class _QuitButtonState extends State<QuitButton> {
+// //   final ScubaGame game; 
+// //   _QuitButtonState(this.game); 
+
+ 
+// //   @override
+// //   Widget build(BuildContext context) {
+// //     return Positioned(
+// //       left: 20,
+// //       top: 20,
+// //       child: GestureDetector(
+// //         onTapDown: (TapDownDetails details) {
+// //           game.toTitle(); 
+// //         },
+// //         child: QuitImage(),
+// //       ),
+// //     );
+// //   }
+// // }
+
+// class QuitImage extends StatelessWidget {
+//   const QuitImage({
+//     Key key,
+//   }) : super(key: key);
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Center(
+//       child: Padding(
+//         padding: const EdgeInsets.all(8.0),
+//         child: Image.asset(
+//           'assets/images/quit_game.png',
+//         ),
+//       ),
+//     );
+//   }
+// }

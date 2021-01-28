@@ -1,89 +1,89 @@
-import 'package:flame/box2d/box2d_component.dart';
-import 'package:box2d_flame/box2d.dart';
+
+import 'dart:math';
+
+import 'package:flame/components/joystick/joystick_component.dart';
+import 'package:flame/components/joystick/joystick_events.dart';
+import 'package:flame/components/mixins/has_game_ref.dart';
+import 'package:flame/components/sprite_animation_component.dart';
+import 'package:flame/extensions/vector2.dart';
+import 'package:flame/sprite_animation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/widgets.dart';
-import 'package:scuba_man/utils.dart';
-import 'dart:math';
+import 'package:scuba_man/scuba_game.dart';
 
-class Scuba extends BodyComponent {
-  static const num BALL_RADIUS = 8.0; 
-  Random rng = new Random(); 
-  Random rngCharge = new Random(); 
-  double posX, posY, chargeX = 1, chargeY = 1;  
+class Scuba extends SpriteAnimationComponent with HasGameRef<ScubaGame> implements JoystickListener  {
+  final double speed = 159;
+  double radAngle = 0;
+  bool _move = false;
+  double currentSpeed = 0;
+  Rect _rect;
 
-  ImagesLoader images = new ImagesLoader(); 
+  Scuba(Vector2 size, SpriteAnimation animation) : super(size, animation);
 
-  Scuba(box2d, double x, double y) : super(box2d) {
-    posX = x; 
-    posY = y; 
-    _loadImages();
-    _createBody();
+  @override
+    Future<void> onLoad() {
+      x = gameRef.size.x/2; 
+      y = gameRef.size.y/2; 
+      return super.onLoad();
+    }
+
+  @override
+  void update(double dt) {
+    super.update(dt);
+    if (_move) {
+      moveFromAngle(dt);  
+    }
+
+    if (x < 0) x = 0; 
+    else if (x > gameRef.size.x) x = gameRef.size.x;
+    else if (y < 0) y = 0; 
+    else if (y > gameRef.size.y) y = gameRef.size.y; 
+
   }
 
-  void _loadImages() {
-      images.load("scuba", "sprite_scuba_man.png");
+  @override
+  void onGameResize(Vector2 size) {
+    _rect = animation.currentFrame.sprite.src; 
+    super.onGameResize(size);
   }
 
-  void renderCircle(Canvas c, Offset center, double radius) {
-    var _image;
-    _image = images.get("scuba");
-  
-    paintImage(
-        canvas: c,
-        image: _image,
-        rect: new Rect.fromCircle(center: center, radius: radius),
-        fit: BoxFit.contain);
+  @override
+  void joystickAction(JoystickActionEvent event) {
+    // if (event.event == ActionEvent.DOWN) {
+    //   if (event.id == 1) {
+    //     _paint = _paint == _whitePaint ? _bluePaint : _whitePaint;
+    //   }
+    //   if (event.id == 2) {
+    //     _paint = _paint == _whitePaint ? _greenPaint : _whitePaint;
+    //   }
+    // }
   }
 
-  _createBody() {
-    //Create Body
-    final bodyDef = new BodyDef();
-
-    if (rng.nextBool()) chargeX = chargeX * -1;
-    if (rng.nextBool()) chargeY = chargeY * -1;
-    bodyDef.position = new Vector2(posX, posY);
-    bodyDef.type = BodyType.DYNAMIC;
-    bodyDef.bullet = true;
-    bodyDef.userData = this; 
-
-    //Create SHape
-    final shape = new CircleShape(); 
-    shape.radius = Scuba.BALL_RADIUS;
-    shape.p.x = 0.0; 
-
-    // Create Fixture which is the thing that holds the physics
-    final fixtureDef = new FixtureDef();
-    fixtureDef.shape = shape; 
-    fixtureDef.restitution = 0.7;
-    fixtureDef.density = .1;
-    fixtureDef.friction = 0.2;
-    fixtureDef.userData = this; 
-    
-  
-    this.body = world.createBody(bodyDef)..createFixtureFromFixtureDef(fixtureDef);
+  @override
+  void joystickChangeDirectional(JoystickDirectionalEvent event) {
+    _move = event.directional != JoystickMoveDirectional.IDLE;
+    if (_move) {
+      radAngle = event.radAngle;
+      currentSpeed = speed * event.intensity;
+    }
   }
 
-  // void input(Offset position) {
-  //   Vector2 force = position.dx < 250 ? new Vector2(-1.0, 0.0) : new Vector2(1.0, 0.0);
-  //   body.applyForce(force..scale(10000.0), center); 
-  // }
+  void moveFromAngle(double dtUpdate) {
+    final double nextX = (currentSpeed * dtUpdate) * cos(radAngle);
+    final double nextY = (currentSpeed * dtUpdate) * sin(radAngle);
 
-  void handleDragUpdate(DragUpdateDetails details) {
-    impulse(details.delta);
-  }
+    if (_rect == null) {
+      return;
+    }
 
-  void handleDragEnd(DragEndDetails details) {
-    //impulse(details.velocity.pixelsPerSecond); 
-  }
-
-  void impulse(Offset velocity) {
-    Vector2 force = new Vector2(velocity.dx * 3, -velocity.dy * 4)..scale(2.0);
-    body.applyLinearImpulse(force, center, true);
-  }
-
-  void stop() {
-    body.linearVelocity = new Vector2(0.0, 0.0);
-    body.angularVelocity = 0.0;
+    final Offset diffBase = Offset(
+          _rect.center.dx + nextX,
+          _rect.center.dy + nextY,
+        ) -
+        _rect.center;
+        
+    this.x = this.x + diffBase.dx; 
+    this.y = this.y + diffBase.dy; 
   }
 }

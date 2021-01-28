@@ -20,7 +20,8 @@ dependencies:
   flutter:
     sdk: flutter
 
-  flame: ^0.22.0
+  flame: ^1.0.0-rc5
+
   hive: ^1.3.0
   hive_flutter: ^0.3.0+1
 
@@ -54,10 +55,10 @@ flutter:
     - assets/images/quit_game.png
     - assets/images/sprite_sheet_jellyfish.png
     - assets/images/sprite_scuba_man.png
-    - assets/images/sprite_sheet_fishy.png
+    - assets/images/fishy.png
     - assets/images/sprite_sheet_bubble.png
     - assets/images/sprite_sheet_shell.png
-    - assets/images/sprite-shark.png
+    - assets/images/sprite_shark.png
     - assets/images/health_bar_0.png
     - assets/images/health_bar_1.png
     - assets/images/health_bar_2.png
@@ -67,3 +68,7 @@ flutter:
     - assets/images/swim_up.png
     - assets/audio/bgm/password_mmx.mp3
     - assets/audio/bgm/ecco_title_gg.mp3
+    - assets/images/sand.png
+    - assets/images/jellyfish.png
+    - assets/images/bubble.png
+    - assets/images/records.png

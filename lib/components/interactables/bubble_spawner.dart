@@ -1,40 +1,42 @@
 import 'package:flame/components/component.dart';
 import 'package:flame/components/mixins/has_game_ref.dart';
-import 'package:flame/components/sprite_component.dart';
 import 'package:flame/extensions/vector2.dart';
 import 'package:flame/sprite_animation.dart';
 import 'package:flame/timer.dart';
-import 'package:scuba_man/components/interactables/fishy.dart';
-import 'package:scuba_man/scuba_game.dart';
+import 'package:scuba_man/components/interactables/bubble.dart';
+import 'package:scuba_man/main.dart';
+
 import 'dart:ui';
 import 'dart:math';
 
-class FishySpawner extends Component with HasGameRef<ScubaGame> {
+import 'package:scuba_man/scuba_game.dart';
+
+class BubbleSpawner extends Component with HasGameRef<ScubaGame> {
   Timer timer;
   Random rng = Random();
-  bool isDestroyed = false; 
-  SpriteAnimation fishyAnim;
-  Image fishyImage; 
-  Fishy fishy; 
+  bool isDestroyed = false;
+  Image bubbleImage;
+  SpriteAnimation bubbleAnim;
+  Bubble bubble;
+  final Vector2 spriteSize = Vector2.all(16);
 
-  FishySpawner() {
+  BubbleSpawner() {
     timer = Timer(1, repeat: true, callback: () {
-      fishy = Fishy(Vector2.all(32), fishyAnim);
-      fishy.x = gameRef.size.x + 32;
-      fishy.y = rng.nextDouble() * gameRef.size.y;
-      gameRef.add(fishy);
+      bubble = Bubble(Vector2.all(32), bubbleAnim);
+      bubble.x = rng.nextDouble() * gameRef.size.x;
+      bubble.y = gameRef.size.y + 32;
+      gameRef.add(bubble);
     });
     timer.start();
   }
 
   @override
   Future<void> onLoad() async {
-
     // TODO: implement onLoad
-    fishyImage = await gameRef.images.load('fishy.png');
+    bubbleImage = await gameRef.images.load('bubble.png');
 
-    fishyAnim = SpriteAnimation.fromFrameData(
-      fishyImage,
+    bubbleAnim = SpriteAnimation.fromFrameData(
+      bubbleImage,
       SpriteAnimationData.sequenced(
         amount: 1,
         textureSize: Vector2.all(32),
@@ -50,7 +52,11 @@ class FishySpawner extends Component with HasGameRef<ScubaGame> {
     timer.update(t);
   }
 
+  @override
+  void render(Canvas c) {}
+
+ 
   void destroy() {
-    shouldRemove = true; 
+    shouldRemove = true;
   }
 }

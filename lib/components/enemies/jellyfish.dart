@@ -1,37 +1,40 @@
-import 'package:flame/components/animation_component.dart';
-import 'package:flame/components/mixins/has_game_ref.dart';
-import 'package:flame/animation.dart';
+import 'dart:math';
+import 'package:flame/components/sprite_animation_component.dart';
+import 'package:flame/sprite_animation.dart';
 import 'package:flutter/gestures.dart';
-import 'package:scuba_man/scuba_man_game.dart';
+import 'package:flutter/material.dart';
+import 'package:vector_math/vector_math_64.dart';
 
-class JellyFish extends AnimationComponent with HasGameRef<ScubaManGame> {
-  JellyFish(double x, double y) : super(24, 24, 
-      Animation.sequenced("sprite_sheet_jellyfish.png", 10, textureWidth: 16, textureHeight: 16)){
-        
-      this.x = x;
-      this.y = y;
-  }
+class JellyFish extends SpriteAnimationComponent{
+  static const num BALL_RADIUS = 16.0;
+  Random rng = new Random();
+  Random rngCharge = new Random();
+  double speedModifier = 80;
+  bool isDestroyed = false;
+
+  JellyFish(Vector2 size, SpriteAnimation animation) : super(size, animation);
 
   @override
-  void update(double t) {
-    super.update(t); 
-
-    y -= 15 * t; 
-
-    // if (gameRef.world.scuba.toRect().overlaps(toRect())) {
-    //   collisionAttack(); 
-    // }
-  }
-
-  collisionAttack() {
-    gameRef.uiState.updateHealthForDamage(); 
-    if (gameRef.uiState.health == 0){
-      gameRef.uiState.toTitleScreen();
+    void update(double t) {
+      // TODO: implement update
+      x -= speedModifier * t;
+      speedModifier -= .5;
+      if (speedModifier <= 4) speedModifier = 80; 
+      y = y + speedModifier * t; 
+      super.update(t);
     }
-  }
 
 
   void onTapDown(TapDownDetails d) {
-    print("jelly tapped");
+    print("fishy tapped");
+  }
+
+  void destroy() {
+    shouldRemove = true; 
+  }
+
+  void impact() {
+    //gameRef.updateScore(1);
+    destroy(); 
   }
 }
