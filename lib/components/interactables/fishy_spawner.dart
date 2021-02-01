@@ -1,8 +1,4 @@
-import 'package:flame/components/component.dart';
-import 'package:flame/components/mixins/has_game_ref.dart';
-import 'package:flame/components/sprite_component.dart';
-import 'package:flame/extensions/vector2.dart';
-import 'package:flame/sprite_animation.dart';
+import 'package:flame/components.dart';
 import 'package:flame/timer.dart';
 import 'package:scuba_man/components/interactables/fishy.dart';
 import 'package:scuba_man/scuba_game.dart';
@@ -19,10 +15,10 @@ class FishySpawner extends Component with HasGameRef<ScubaGame> {
 
   FishySpawner() {
     timer = Timer(1, repeat: true, callback: () {
-      fishy = Fishy(Vector2.all(32), fishyAnim);
+      fishy = Fishy.fromSpriteAnimation(Vector2.all(32), fishyAnim);
       fishy.x = gameRef.size.x + 32;
       fishy.y = rng.nextDouble() * gameRef.size.y;
-      gameRef.add(fishy);
+      gameRef.summonFishy(fishy); 
     });
     timer.start();
   }

@@ -1,19 +1,12 @@
 import 'dart:ui';
-import 'package:flame/extensions/vector2.dart';
-import 'package:flame/game/game_widget.dart';
-import 'package:flame/flame.dart';
-import 'package:flame/sprite_animation.dart';
-import 'package:flame/util.dart';
-
-import 'package:flutter/services.dart';
 //import 'package:hive/hive.dart';
 //import 'package:path_provider/path_provider.dart' as path_provider;
 import 'package:flame/game.dart';
+import 'package:flutter/services.dart';
 import 'package:scuba_man/scuba_game.dart';
 import 'package:flutter/material.dart';
 import 'package:scuba_man/ui/health_widget.dart';
 import 'package:scuba_man/ui/high_score.dart';
-import 'package:scuba_man/ui/quit_button.dart';
 import 'package:scuba_man/ui/records_image.dart';
 import 'package:scuba_man/ui/start_image.dart';
 
@@ -24,11 +17,10 @@ void main() async {
   // Hive.init(appDocumentsDirectory.path);
   // //await Hive.openBox("scuba_box");
 
-  // Create util for fullscreen and set orientation
-  Util flameUtil = Util();
-  await flameUtil.fullScreen();
-  await flameUtil.setOrientation(DeviceOrientation.portraitUp);
-
+  await SystemChrome.setEnabledSystemUIOverlays([]);
+  await SystemChrome.setPreferredOrientations(
+    <DeviceOrientation>[DeviceOrientation.portraitUp],
+  );
   runApp(ScubaManApp());
 }
 
@@ -36,6 +28,7 @@ class ScubaManApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: MyHomePage(),
     );
   }
@@ -49,7 +42,9 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  ScubaGame _myGame = ScubaGame(); 
+  final healthBarState = new HealthBarState();
+  final scoreState = new HighScoreState();
+  ScubaGame _myGame;
 
   Widget titleImageBuilder(BuildContext context, ScubaGame game) {
     return Positioned(
@@ -91,13 +86,11 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Widget healthBarBuilder(BuildContext context, ScubaGame game) {
-    HealthBarState healthBarState = new HealthBarState();
     return HealthBar(healthBarState);
   }
 
   Widget highScoreBuilder(BuildContext context, ScubaGame game) {
-    HighScoreState highScoreState = new HighScoreState();
-    return HighScore(highScoreState);
+    return HighScore(scoreState);
   }
 
   Widget quitButtonBuilder(BuildContext context, ScubaGame game) {
@@ -105,19 +98,17 @@ class _MyHomePageState extends State<MyHomePage> {
       left: 20,
       top: 20,
       child: GestureDetector(
-        onTapDown: (TapDownDetails details) {
-          game.toTitle(); 
-        },
-        child: Image.asset('assets/images/quit_game.png')
-      ),
+          onTapDown: (TapDownDetails details) {
+            game.toTitle();
+          },
+          child: Image.asset('assets/images/quit_game.png')),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    
+    _myGame = ScubaGame(healthBarState, scoreState);
     return Scaffold(
-      
       body: _myGame == null
           ? const Text('Wait')
           : GameWidget<ScubaGame>(

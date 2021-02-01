@@ -1,8 +1,9 @@
 import 'dart:math';
 import 'dart:ui';
-import 'package:flame/components/mixins/has_game_ref.dart';
-import 'package:flame/components/sprite_animation_component.dart';
-import 'package:flame/sprite_animation.dart';
+import 'package:flame/components.dart';
+
+
+
 import 'package:flutter/gestures.dart';
 import 'package:scuba_man/scuba_game.dart';
 import 'package:vector_math/vector_math_64.dart';
@@ -14,7 +15,7 @@ class Bubble extends SpriteAnimationComponent with HasGameRef<ScubaGame> {
   double posX, posY, acceleration;
   bool isDestroyed = false;
   
-  Bubble(Vector2 size, SpriteAnimation animation) : super(size, animation);
+  Bubble.fromSpriteAnimation(Vector2 size, SpriteAnimation anim) : super.fromSpriteAnimation(size, anim);
 
   @override
     void update(double t) {

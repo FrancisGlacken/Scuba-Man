@@ -1,24 +1,7 @@
-import 'dart:ui';
-import 'package:flame/components/sprite_animation_component.dart';
-import 'package:flame/extensions/vector2.dart';
-import 'package:flame/game/game_widget.dart';
+import 'package:flame/components.dart';
 import 'package:flame/flame.dart';
-import 'package:flame/sprite_animation.dart';
-import 'package:flame/util.dart';
-
-import 'package:flutter/services.dart';
-//import 'package:hive/hive.dart';
-//import 'package:path_provider/path_provider.dart' as path_provider;
-import 'package:flame/components/joystick/joystick_component.dart';
-import 'package:flame/components/joystick/joystick_directional.dart';
-import 'package:flame/components/parallax_component.dart';
+import 'package:flame/joystick.dart';
 import 'package:flame/gestures.dart';
-import 'package:scuba_man/components/box2d/border_wall.dart';
-import 'package:scuba_man/components/box2d/collision_callbacks/fishy_callback.dart';
-import 'package:scuba_man/components/box2d/collision_callbacks/jelly_callback.dart';
-import 'package:scuba_man/components/box2d/collision_callbacks/shark_callback.dart';
-import 'package:scuba_man/components/box2d/collision_callbacks/shell_callback.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flame/game.dart';
 import 'package:scuba_man/components/enemies/jellyfish.dart';
 import 'package:scuba_man/components/enemies/jellyfish_spawner.dart';
@@ -27,56 +10,46 @@ import 'package:scuba_man/components/enemies/shark_spawner.dart';
 import 'package:scuba_man/components/interactables/bubble_spawner.dart';
 import 'package:scuba_man/components/interactables/fishy_spawner.dart';
 import 'package:scuba_man/components/interactables/shell.dart';
-import 'package:scuba_man/components/interactables/shell_spawner.dart';
-import 'package:scuba_man/components/parallax_bg.dart';
 import 'package:scuba_man/components/player/scuba.dart';
 import 'package:scuba_man/components/interactables/fishy.dart';
+import 'package:scuba_man/ui/health_widget.dart';
 import 'package:scuba_man/ui/last_score.dart';
 import 'package:scuba_man/ui/record.dart';
 import 'package:scuba_man/ui/high_score.dart';
-import 'package:scuba_man/utils/utils.dart';
 import 'package:flutter/material.dart' hide Image;
+import 'package:audioplayers/audio_cache.dart';
+
 
 class ScubaGame extends BaseGame with MultiTouchDragDetector {
-  //AudioPlayer homeBGM;
-  //AudioPlayer gameBGM;
-  ImagesLoader oceanBG;
+  final jukebox = AudioCache();
+  // AudioPlayer gameBGM;
   Scuba scubaGuy;
-  Shell shell;
   List<Fishy> fishies = new List<Fishy>();
   List<Shell> shells = new List<Shell>();
   List<JellyFish> jellies = new List<JellyFish>();
   List<Shark> sharks = new List<Shark>();
-  List<ParallaxImage> imagesBG = new List<ParallaxImage>();
   List<Record> records = new List<Record>();
+  List<String> bgImages = ['bg_ocean.png'];
   FishySpawner fishySpawner;
-  // ShellSpawner shellSpawner = new ShellSpawner();
   JellyfishSpawner jellySpawner;
   BubbleSpawner bubbleSpawner;
   SharkSpawner sharkSpawner;
   HighScore scoreCard;
-  HighScoreState scoreState;
   LastScore lastScoreCard;
+  HealthBarState healthBarState;
+  HighScoreState scoreState;
   LastScoreState lastScoreState;
-  //HealthBar healthBar;
-  //HealthBarState healthState;
-  var levels;
-  int score, health;
-  //Sand sand;
+  int health;
   JoystickComponent joystick;
-  Image bgImage, scubaImage;
-  SpriteAnimation scubaAnim;
-  ParallaxComponent parallaxComponent; 
+  SpriteAnimation scubaAnim, jellyAnim;
+  bool scubaIsInvincible = false;
+  ParallaxComponent parallax;
+  Timer invincibilityTimer;
+  TimerComponent invincibilityTimerComponent;
 
   @override
   Future<void> onLoad() async {
-    bgImage = await images.load('bg_ocean.png');
-    scubaImage = await images.load('sprite_scuba_man.png');
-
-    joystick = JoystickComponent(
-      directional: JoystickDirectional(
-          margin: EdgeInsets.only(left: size.x * .8, bottom: size.y * .1)),
-    );
+    final scubaImage = await images.load('sprite_scuba_man.png');
 
     scubaAnim = SpriteAnimation.fromFrameData(
       scubaImage,
@@ -88,29 +61,43 @@ class ScubaGame extends BaseGame with MultiTouchDragDetector {
       ),
     );
 
-    scubaGuy = Scuba(Vector2.all(50), scubaAnim);
-    joystick.addObserver(scubaGuy);
+    print("this is print");
+    // invincibilityTimerComponent =
+    //     TimerComponent();
+    invincibilityTimer = new Timer(3, repeat: true, callback: () {
+      scubaIsInvincible = false;
+    });
 
-    imagesBG.add(new ParallaxImage('bg_ocean.png',
-        repeat: ImageRepeat.repeat,
-        alignment: Alignment.center,
-        fill: LayerFill.height));
-    add(parallaxComponent = ParallaxBg(imagesBG));
+    joystick = JoystickComponent(
+      directional: JoystickDirectional(
+          margin: EdgeInsets.only(left: size.x * .8, bottom: size.y * .1)),
+    );
+
+    parallax = await ParallaxComponent.load(
+      bgImages,
+      baseVelocity: Vector2(20, 0),
+      velocityMultiplierDelta: Vector2(1.8, 1.0),
+      images: images,
+    );
+
+    scubaGuy = Scuba.fromSpriteAnimation(Vector2.all(64), scubaAnim);
+    scubaGuy.x = size.x / 2;
+    scubaGuy.y = size.y / 2;
+    joystick.addObserver(scubaGuy);
     add(bubbleSpawner = BubbleSpawner());
-    initializeTitleScreen(); 
+    add(parallax);
+    initializeTitleScreen();
+    jukebox.loop('audio/bgm/password_mmx.aac');
   }
 
-  ScubaGame() {
-    score = 0;
-   // health = 3;
-    //sand = Sand(box2D, size);
-    scoreState = new HighScoreState();
-    lastScoreState = new LastScoreState();
-    // healthState = new HealthBarState();
-    // addContactCallback(FishyCallback(this));
-    // addContactCallback(ShellCallback(this));
-    // addContactCallback(JellyCallback(this));
-    // addContactCallback(SharkCallback(this));
+  @override
+  void onReceiveDrag(DragEvent drag) {
+    joystick.onReceiveDrag(drag);
+    super.onReceiveDrag(drag);
+  }
+
+  ScubaGame(this.healthBarState, this.scoreState) {
+    health = 3;
 
     records.addAll([
       Record(50, "FRN"),
@@ -124,29 +111,19 @@ class ScubaGame extends BaseGame with MultiTouchDragDetector {
       Record(10, "JHG"),
       Record(5, "ASS")
     ]);
-
-    //List<BodyComponent> borders = BorderWall(box2D).bodies;
-    // borders.forEach((b) {
-    //   add(b);
-    // });
-
-    //add(BubbleSpawner());
-    // _initializeMusic();
   }
 
   void startGame() {
     _clearTitleScreen();
+    summonScuba();
     //   playGameBGM();
-    //   // addWidgetOverlay('score', scoreCard = HighScore(scoreState));
-    //   // addWidgetOverlay('lastScore', lastScoreCard = LastScore(lastScoreState));
     overlays.add('health_bar');
     overlays.add('quit_button');
-    overlays.add('score'); 
-    addScuba();
+    overlays.add('score');
     add(fishySpawner = FishySpawner());
-    // add(shellSpawner = ShellSpawner());
     add(jellySpawner = JellyfishSpawner());
     add(sharkSpawner = SharkSpawner());
+    resetScore(); 
   }
 
   void toScoreBoard() {
@@ -156,28 +133,23 @@ class ScubaGame extends BaseGame with MultiTouchDragDetector {
   }
 
   void toTitle() {
-    overlays.remove('quit_button'); 
+    overlays.remove('quit_button');
     overlays.remove('health_bar');
     removeAll(components);
-    add(parallaxComponent);  
-    overlays.add('health_bar'); 
-    initializeTitleScreen(); 
-    
-    // overlays.add('title_image');
-    // overlays.add('start_image');
-    // overlays.add('record_button');
+    add(parallax);
+    resetHealth();
+    overlays.add('health_bar');
+    initializeTitleScreen();
   }
 
-  void initializeTitleScreen() { 
+  void initializeTitleScreen() {
     overlays.add('title_image');
-    overlays.add('start_button'); 
+    overlays.add('start_button');
     overlays.add('record_button');
   }
-  
-
 
   void addHighScore() {
-    records.add(Record(score, "NEW"));
+    //records.add(Record(score, "NEW"));
     records.removeLast();
   }
 
@@ -186,22 +158,31 @@ class ScubaGame extends BaseGame with MultiTouchDragDetector {
     overlays.remove('start_button');
     overlays.remove('record_button');
   }
-  
 
-  void clearUI() {
-    components.forEach((element) {
-      if (element!= parallaxComponent)
-      element.shouldRemove = false; 
-    });
-    overlays.add('title_image');
-
-    
-    // removeWidgetOverlay('title');
-    // removeWidgetOverlay('start_button');
-    // removeWidgetOverlay('board_button');
-    // removeWidgetOverlay('record_list');
-    // removeWidgetOverlay('quit_button');
+  summonScuba() {
+    add(scubaGuy);
+    add(joystick);
   }
+
+  summonFishy(Fishy fish) {
+    fishies.add(fish);
+    add(fish);
+  }
+
+  // addShell(Shell shell) {
+  //   shells.add(shell);
+  //   add(shell);
+  // }
+
+  // addJelly(JellyFish jellyFish) {
+  //   jellies.add(jellyFish);
+  //   add(jellyFish);
+  // }
+
+  // addShark(Shark shark) {
+  //   sharks.add(shark);
+  //   add(shark);
+  // }
 
   updateScore(int points) {
     scoreState.updateScore(points);
@@ -211,202 +192,27 @@ class ScubaGame extends BaseGame with MultiTouchDragDetector {
     scoreState.resetScore();
   }
 
-  updateHealth(int damage) {
-    health += damage;
-    //healthState.updateHealth(damage);
-    if (health < 1) {
-      // _gameOver();
+  damageHealth(int damage) {
+    if (scubaIsInvincible) {
+      print("Scubaguy is invincible to this blow!");
+    } else {
+      scubaIsInvincible = true;
+      add((TimerComponent(invincibilityTimer..start()))); 
+      health += damage;
+      healthBarState.updateHealth(health);
+      if (health < 1) {
+        gameOver();
+      }
     }
   }
 
   resetHealth() {
     health = 3;
-    //healthState.resetHealth();
+    healthBarState.resetHealth();
   }
 
-  void _gameOver() {
-    resetHealth();
-    addHighScore();
-    resetScore();
-    // scuba.destroyed();
-    fishySpawner.destroy();
-    // shellSpawner.destroyed();
-    jellySpawner.destroy();
-    sharkSpawner.destroy();
-
-    fishies.forEach((element) {
-      element.destroy();
-    });
-    fishies.clear();
-
-    shells.forEach((element) {
-      element.destroyed();
-    });
-
-    jellies.forEach((element) {
-      element.destroy();
-    });
-
-    sharks.forEach((element) {
-      element.destroy();
-    });
-  }
-
-  @override
-  void onTapDown(TapDownDetails details) {
-    if (overlays.isActive('quit_button')) {
-      toTitle(); 
-    }
-  }
-
-
-  @override
-  void onReceiveDrag(DragEvent drag) {
-    // TODO: implement onReceiveDrag
-    joystick.onReceiveDrag(drag);
-    super.onReceiveDrag(drag);
-  }
-
-  // void _initializeMusic() async {
-  //   homeBGM =
-  //       await Flame.audio.loopLongAudio('bgm/ecco_title_gg.mp3', volume: .25);
-  //   homeBGM.pause();
-  //   gameBGM =
-  //       await Flame.audio.loopLongAudio('bgm/password_mmx.mp3', volume: .25);
-  //   gameBGM.pause();
-  // }
-
-  //playHomeBGM() {
-  // gameBGM.pause();
-  // gameBGM.seek(Duration.zero);
-  // homeBGM.resume();
-  //}
-
-  playGameBGM() {
-    // homeBGM.pause();
-    // homeBGM.seek(Duration.zero);
-    // gameBGM.resume();
-  }
-
-  pauseBGM() {
-    // homeBGM.pause();
-    // gameBGM.pause();
-    // homeBGM.seek(Duration.zero);
-    // gameBGM.seek(Duration.zero);
-  }
-
-  addScuba() {
-    add(scubaGuy);
-    add(joystick);
-  }
-
-  addFishy(Fishy fish) {
-    fishies.add(fish);
-    add(fish);
-  }
-
-  addShell(Shell shell) {
-    shells.add(shell);
-    add(shell);
-  }
-
-  addJelly(JellyFish jellyFish) {
-    jellies.add(jellyFish);
-    add(jellyFish);
-  }
-
-  addShark(Shark shark) {
-    sharks.add(shark);
-    add(shark);
+  gameOver() {
+    //saveScoreAndGiveSplashScreen();
+    toTitle();
   }
 }
-
-// class ScubaBox2D extends Box2DComponent implements ContactFilter {
-//   ScubaBox2D() : super(scale: 1.0);
-
-//   @override
-//   void initializeWorld() {}
-
-//   @override
-//   void update(double t) {
-//     world.setContactFilter(this);
-//     super.update(t);
-//   }
-
-//   // finish implementing contact filter
-//   @override
-//   bool shouldCollide(Fixture fixtureA, Fixture fixtureB) {
-//     // Wall & Fishy
-//     if (fixtureA.userData == 'wall' && fixtureB.userData == 'fishy') {
-//       return false;
-//     }
-//     // if (fixtureA.userData == 'wall' && fixtureB.userData == 'shell') {
-//     //   return false;
-//     // }
-//     if (fixtureA.userData == 'wall' && fixtureB.userData == 'jellyfish') {
-//       return false;
-//     }
-//     if (fixtureA.userData == 'wall' && fixtureB.userData == 'shark') {
-//       return false;
-//     }
-
-//     // Fishy collision
-//     if (fixtureA.userData == 'fishy' && fixtureB.userData == 'shell') {
-//       return false;
-//     }
-//     if (fixtureA.userData == 'fishy' && fixtureB.userData == 'jellyfish') {
-//       return false;
-//     }
-//     if (fixtureA.userData == 'fishy' && fixtureB.userData == 'fishy') {
-//       return false;
-//     }
-//     if (fixtureA.userData == 'fishy' && fixtureB.userData == 'shark') {
-//       return false;
-//     }
-
-//     if (fixtureA.userData == 'jellyfish' && fixtureB.userData == 'fishy') {
-//       return false;
-//     }
-//     if (fixtureA.userData == 'jellyfish' && fixtureB.userData == 'shell') {
-//       return false;
-//     }
-//     if (fixtureA.userData == 'jellyfish' && fixtureB.userData == 'shark') {
-//       return false;
-//     }
-//     if (fixtureA.userData == 'jellyfish' && fixtureB.userData == 'jellyfish') {
-//       return false;
-//     }
-
-//     if (fixtureA.userData == 'shell' && fixtureB.userData == 'fishy') {
-//       return false;
-//     }
-//     if (fixtureA.userData == 'shell' && fixtureB.userData == 'jellyfish') {
-//       return false;
-//     }
-//     if (fixtureA.userData == 'shell' && fixtureB.userData == 'shell') {
-//       return false;
-//     }
-//     if (fixtureA.userData == 'shell' && fixtureB.userData == 'shark') {
-//       return false;
-//     }
-
-//     if (fixtureA.userData == 'shark' && fixtureB.userData == 'fishy') {
-//       return false;
-//     }
-//     if (fixtureA.userData == 'shark' && fixtureB.userData == 'jellyfish') {
-//       return false;
-//     }
-//     if (fixtureA.userData == 'shark' && fixtureB.userData == 'shell') {
-//       return false;
-//     }
-//     if (fixtureA.userData == 'shark' && fixtureB.userData == 'shark') {
-//       return false;
-//     }
-
-//     if (fixtureA.userData == 'bubble' || fixtureB.userData == 'bubble') {
-//       return false; // No contact for bubbles
-//     }
-
-//     return true;
-//   }
-//}

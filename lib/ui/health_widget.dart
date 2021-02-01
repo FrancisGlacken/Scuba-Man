@@ -20,9 +20,9 @@ class HealthBarState extends State<HealthBar> {
 
   HealthBarState();
 
-  updateHealth(damagedHP) {
+  updateHealth(health) {
     setState(() {
-      hp += damagedHP; 
+      hp = health; 
     });
   }
 

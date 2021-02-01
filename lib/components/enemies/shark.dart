@@ -1,37 +1,48 @@
 import 'dart:math';
-import 'package:flame/components/sprite_animation_component.dart';
-import 'package:flame/sprite_animation.dart';
+import 'package:flame/components.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:scuba_man/scuba_game.dart';
 import 'package:vector_math/vector_math_64.dart';
 
-class Shark extends SpriteAnimationComponent {
-  static const num BALL_RADIUS = 32.0; 
-  Random rng = new Random(); 
-  Random rngCharge = new Random(); 
-  double speedModifier; 
-  bool isDestroyed = false; 
+class Shark extends SpriteAnimationComponent with HasGameRef<ScubaGame> {
+  static const num BALL_RADIUS = 32.0;
+  Random rng = new Random();
+  Random rngCharge = new Random();
+  double speedModifier;
+  bool isDestroyed = false;
 
-
-  Shark(Vector2 size, SpriteAnimation animation) : super(size, animation);
+  Shark.fromSpriteAnimation(Vector2 size, SpriteAnimation anim)
+      : super.fromSpriteAnimation(size, anim);
 
   @override
-    void update(double t) {
-      // TODO: implement update
-      x = x - 50 * t; 
-      super.update(t);
+  void update(double t) {
+    // TODO: implement update
+    x = x - 50 * t;
+
+    if (x < -100 ||
+        x > gameRef.size.x + 100 ||
+        y < -100 ||
+        y > gameRef.size.y + 100) {
+      this.remove();
     }
-  
+
+    if (this.toRect().overlaps(gameRef.scubaGuy.toRect())) {
+      gameRef.damageHealth(-1);
+    }
+    super.update(t);
+  }
+
   void onTapDown(TapDownDetails d) {
     print("fishy tapped");
   }
 
   void destroy() {
-  shouldRemove = true; 
+    shouldRemove = true;
   }
 
   void impact() {
-    //gameRef.updateScore(1); 
-    destroy();  
+    //gameRef.updateScore(1);
+    destroy();
   }
 }

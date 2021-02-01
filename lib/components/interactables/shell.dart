@@ -1,7 +1,5 @@
 import 'dart:math';
-import 'package:flame/components/mixins/has_game_ref.dart';
-import 'package:flame/components/sprite_animation_component.dart';
-import 'package:flame/sprite_animation.dart';
+import 'package:flame/components.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:scuba_man/utils/utils.dart';
@@ -16,7 +14,7 @@ class Shell extends SpriteAnimationComponent {
 
   ImagesLoader images = new ImagesLoader();
 
-  Shell(Vector2 size, SpriteAnimation animation) : super(size, animation);
+  Shell(Vector2 size, SpriteAnimation animation) : super();
 
   void _loadImages() {
     images.load("shell", "sprite_sheet_shell.png");

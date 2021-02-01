@@ -1,10 +1,7 @@
-import 'package:flame/components/component.dart';
-import 'package:flame/components/mixins/has_game_ref.dart';
-import 'package:flame/extensions/vector2.dart';
-import 'package:flame/sprite_animation.dart';
+
+import 'package:flame/components.dart';
 import 'package:flame/timer.dart';
 import 'package:scuba_man/components/interactables/bubble.dart';
-import 'package:scuba_man/main.dart';
 
 import 'dart:ui';
 import 'dart:math';
@@ -22,7 +19,7 @@ class BubbleSpawner extends Component with HasGameRef<ScubaGame> {
 
   BubbleSpawner() {
     timer = Timer(1, repeat: true, callback: () {
-      bubble = Bubble(Vector2.all(32), bubbleAnim);
+      bubble = Bubble.fromSpriteAnimation(Vector2.all(32), bubbleAnim);
       bubble.x = rng.nextDouble() * gameRef.size.x;
       bubble.y = gameRef.size.y + 32;
       gameRef.add(bubble);

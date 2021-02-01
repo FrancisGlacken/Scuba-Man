@@ -1,19 +1,14 @@
+
 import 'dart:math';
-import 'package:flame/components/sprite_animation_component.dart';
-import 'package:flame/sprite_animation.dart';
-import 'package:flutter/gestures.dart';
-import 'package:flutter/material.dart';
-import 'package:vector_math/vector_math_64.dart';
+import 'package:flame/components.dart';
+import 'package:scuba_man/scuba_game.dart';
 
-class JellyFish extends SpriteAnimationComponent{
-  static const num BALL_RADIUS = 16.0;
+class JellyFish extends SpriteAnimationComponent with HasGameRef<ScubaGame> {
   Random rng = new Random();
-  Random rngCharge = new Random();
   double speedModifier = 80;
-  bool isDestroyed = false;
 
-  JellyFish(Vector2 size, SpriteAnimation animation) : super(size, animation);
-
+  JellyFish.fromSpriteAnimation(size, animation) : super.fromSpriteAnimation(size, animation);
+ 
   @override
     void update(double t) {
       // TODO: implement update
@@ -22,12 +17,17 @@ class JellyFish extends SpriteAnimationComponent{
       if (speedModifier <= 4) speedModifier = 80; 
       y = y + speedModifier * t; 
       super.update(t);
+
+      if (x < -100 || x > gameRef.size.x+100 || y < -100 || y > gameRef.size.y+100) {
+      this.remove(); 
+      }
+
+      if (this.toRect().overlaps(gameRef.scubaGuy.toRect())) {
+        gameRef.damageHealth(-1); 
+      }
+
+      super.update(t); 
     }
-
-
-  void onTapDown(TapDownDetails d) {
-    print("fishy tapped");
-  }
 
   void destroy() {
     shouldRemove = true; 

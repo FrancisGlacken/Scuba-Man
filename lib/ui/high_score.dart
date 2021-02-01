@@ -38,7 +38,9 @@ class HighScoreState extends State<HighScore> {
           alignment: Alignment.topCenter,
           child: Text(
             score.toString(),
-            style: TextStyle(fontSize: 24, color: Colors.white),
+            style: TextStyle(
+                fontSize: 24,
+                color: Colors.green[300]),
           ),
         ),
       ),

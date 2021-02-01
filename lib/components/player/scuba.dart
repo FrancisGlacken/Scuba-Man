@@ -1,50 +1,49 @@
-
 import 'dart:math';
+import 'dart:ui';
 
-import 'package:flame/components/joystick/joystick_component.dart';
-import 'package:flame/components/joystick/joystick_events.dart';
-import 'package:flame/components/mixins/has_game_ref.dart';
-import 'package:flame/components/sprite_animation_component.dart';
-import 'package:flame/extensions/vector2.dart';
-import 'package:flame/sprite_animation.dart';
-import 'package:flutter/gestures.dart';
-import 'package:flutter/painting.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flame/components.dart';
+import 'package:scuba_man/components/interactables/fishy.dart';
 import 'package:scuba_man/scuba_game.dart';
 
-class Scuba extends SpriteAnimationComponent with HasGameRef<ScubaGame> implements JoystickListener  {
+class Scuba extends SpriteAnimationComponent
+    with HasGameRef<ScubaGame>
+    implements JoystickListener {
   final double speed = 159;
   double radAngle = 0;
   bool _move = false;
   double currentSpeed = 0;
+  SpriteAnimation scubaAnim;
+  Image scubaImage;
   Rect _rect;
 
-  Scuba(Vector2 size, SpriteAnimation animation) : super(size, animation);
-
-  @override
-    Future<void> onLoad() {
-      x = gameRef.size.x/2; 
-      y = gameRef.size.y/2; 
-      return super.onLoad();
-    }
+  Scuba.fromSpriteAnimation(size, animation) : super.fromSpriteAnimation(size, animation); 
 
   @override
   void update(double dt) {
     super.update(dt);
     if (_move) {
-      moveFromAngle(dt);  
+      moveFromAngle(dt);
     }
 
-    if (x < 0) x = 0; 
-    else if (x > gameRef.size.x) x = gameRef.size.x;
-    else if (y < 0) y = 0; 
-    else if (y > gameRef.size.y) y = gameRef.size.y; 
+    if (x < 0)
+      x = 0;
+    else if (x > gameRef.size.x - 32)
+      x = gameRef.size.x - 32;
+    else if (y < 0)
+      y = 0;
+    else if (y > gameRef.size.y - 32) y = gameRef.size.y - 32;
 
+    // if (this.toRect().overlaps() = true; 
+    // gameRef.fishies.forEach((Fishy f) {
+    //   if (f.toRect().overlaps(this.toRect())) {
+    //     shouldRemove = true;
+    //   }
+    // });
   }
 
   @override
   void onGameResize(Vector2 size) {
-    _rect = animation.currentFrame.sprite.src; 
+    _rect = animation.currentFrame.sprite.src;
     super.onGameResize(size);
   }
 
@@ -67,6 +66,7 @@ class Scuba extends SpriteAnimationComponent with HasGameRef<ScubaGame> implemen
       radAngle = event.radAngle;
       currentSpeed = speed * event.intensity;
     }
+
   }
 
   void moveFromAngle(double dtUpdate) {
@@ -82,8 +82,8 @@ class Scuba extends SpriteAnimationComponent with HasGameRef<ScubaGame> implemen
           _rect.center.dy + nextY,
         ) -
         _rect.center;
-        
-    this.x = this.x + diffBase.dx; 
-    this.y = this.y + diffBase.dy; 
+
+    this.x = this.x + diffBase.dx;
+    this.y = this.y + diffBase.dy;
   }
 }
