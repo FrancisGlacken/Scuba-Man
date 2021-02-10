@@ -1,5 +1,4 @@
 import 'package:flame/components.dart';
-import 'package:flame/flame.dart';
 import 'package:flame/joystick.dart';
 import 'package:flame/gestures.dart';
 import 'package:flame/game.dart';
@@ -22,7 +21,6 @@ import 'package:audioplayers/audio_cache.dart';
 
 class ScubaGame extends BaseGame with MultiTouchDragDetector {
   final jukebox = AudioCache();
-  // AudioPlayer gameBGM;
   Scuba scubaGuy;
   List<Fishy> fishies = new List<Fishy>();
   List<Shell> shells = new List<Shell>();
@@ -54,16 +52,14 @@ class ScubaGame extends BaseGame with MultiTouchDragDetector {
     scubaAnim = SpriteAnimation.fromFrameData(
       scubaImage,
       SpriteAnimationData.sequenced(
-        amount: 1,
-        textureSize: Vector2.all(32),
-        stepTime: 0.15,
-        loop: false,
+        amount: 11,
+        textureSize: Vector2(128, 64),
+        stepTime: 0.1,
+        loop: true,
       ),
     );
 
     print("this is print");
-    // invincibilityTimerComponent =
-    //     TimerComponent();
     invincibilityTimer = new Timer(3, repeat: true, callback: () {
       scubaIsInvincible = false;
     });
@@ -80,14 +76,14 @@ class ScubaGame extends BaseGame with MultiTouchDragDetector {
       images: images,
     );
 
-    scubaGuy = Scuba.fromSpriteAnimation(Vector2.all(64), scubaAnim);
+    scubaGuy = Scuba.fromSpriteAnimation(Vector2(70, 35), scubaAnim);
     scubaGuy.x = size.x / 2;
     scubaGuy.y = size.y / 2;
     joystick.addObserver(scubaGuy);
     add(bubbleSpawner = BubbleSpawner());
     add(parallax);
     initializeTitleScreen();
-    jukebox.loop('audio/bgm/password_mmx.aac');
+    //jukebox.loop('audio/bgm/password_mmx.aac');
   }
 
   @override
@@ -98,19 +94,6 @@ class ScubaGame extends BaseGame with MultiTouchDragDetector {
 
   ScubaGame(this.healthBarState, this.scoreState) {
     health = 3;
-
-    records.addAll([
-      Record(50, "FRN"),
-      Record(45, "FRN"),
-      Record(40, "NAR"),
-      Record(35, "ALY"),
-      Record(30, "AMT"),
-      Record(25, "FMG"),
-      Record(20, "JMG"),
-      Record(15, "JPG"),
-      Record(10, "JHG"),
-      Record(5, "ASS")
-    ]);
   }
 
   void startGame() {
@@ -126,10 +109,10 @@ class ScubaGame extends BaseGame with MultiTouchDragDetector {
     resetScore(); 
   }
 
-  void toScoreBoard() {
+  void toLeaderBoard() {
     _clearTitleScreen();
-    // addWidgetOverlay('record_list', Records(records));
-    // addWidgetOverlay('quit_button', QuitButton(toTitle));
+    //overlays.add('record_list');
+    overlays.add('quit_button');
   }
 
   void toTitle() {

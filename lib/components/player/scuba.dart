@@ -8,7 +8,7 @@ import 'package:scuba_man/scuba_game.dart';
 class Scuba extends SpriteAnimationComponent
     with HasGameRef<ScubaGame>
     implements JoystickListener {
-  final double speed = 159;
+  final double speed = 100;
   double radAngle = 0;
   bool _move = false;
   double currentSpeed = 0;
@@ -23,6 +23,8 @@ class Scuba extends SpriteAnimationComponent
     super.update(dt);
     if (_move) {
       moveFromAngle(dt);
+    } else {
+      y += 20 * dt; 
     }
 
     if (x < 0)
@@ -64,6 +66,7 @@ class Scuba extends SpriteAnimationComponent
     _move = event.directional != JoystickMoveDirectional.IDLE;
     if (_move) {
       radAngle = event.radAngle;
+      //Todo:
       currentSpeed = speed * event.intensity;
     }
 

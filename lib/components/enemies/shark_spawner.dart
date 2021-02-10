@@ -37,7 +37,7 @@ class SharkSpawner extends Component with HasGameRef<ScubaGame> {
   @override
   Future<void> onLoad() async {
     // TODO: implement onLoad
-    sharkImage = await gameRef.images.load('sprite_shark.png');
+    sharkImage = await gameRef.images.load('sprite_sheet_bullet_fish.png');
 
     return super.onLoad();
   }

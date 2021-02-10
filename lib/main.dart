@@ -7,7 +7,9 @@ import 'package:scuba_man/scuba_game.dart';
 import 'package:flutter/material.dart';
 import 'package:scuba_man/ui/health_widget.dart';
 import 'package:scuba_man/ui/high_score.dart';
+import 'package:scuba_man/ui/record.dart';
 import 'package:scuba_man/ui/records_image.dart';
+import 'package:scuba_man/ui/records_list.dart';
 import 'package:scuba_man/ui/start_image.dart';
 
 void main() async {
@@ -44,6 +46,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   final healthBarState = new HealthBarState();
   final scoreState = new HighScoreState();
+  var records = new List<Record>(); 
   ScubaGame _myGame;
 
   Widget titleImageBuilder(BuildContext context, ScubaGame game) {
@@ -72,13 +75,13 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  Widget recordBoardBuilder(BuildContext context, ScubaGame game) {
+  Widget recordButtonBuilder(BuildContext context, ScubaGame game) {
     return Positioned(
       left: 150,
       top: 480,
       child: GestureDetector(
         onTapUp: (TapUpDetails details) {
-          game.toScoreBoard();
+          game.toLeaderBoard();
         },
         child: RecordsImage(),
       ),
@@ -105,6 +108,23 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
+  Widget leaderBoardBuilder(BuildContext buildContext) {
+
+    records.addAll([
+      Record(50, "FRN"),
+      Record(45, "FRN"),
+      Record(40, "NAR"),
+      Record(35, "ALY"),
+      Record(30, "AMT"),
+      Record(25, "FMG"),
+      Record(20, "JMG"),
+      Record(15, "JPG"),
+      Record(10, "JHG"),
+      Record(5, "ASS")
+    ]);
+    return Records(records); 
+  }
+
   @override
   Widget build(BuildContext context) {
     _myGame = ScubaGame(healthBarState, scoreState);
@@ -116,7 +136,7 @@ class _MyHomePageState extends State<MyHomePage> {
               overlayBuilderMap: {
                 'title_image': titleImageBuilder,
                 'start_button': startButtonBuilder,
-                'record_button': recordBoardBuilder,
+                'record_button': recordButtonBuilder,
                 'health_bar': healthBarBuilder,
                 'score': highScoreBuilder,
                 'quit_button': quitButtonBuilder

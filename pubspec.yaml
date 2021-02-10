@@ -61,7 +61,7 @@ flutter:
     - assets/images/fishy.png
     - assets/images/sprite_sheet_bubble.png
     - assets/images/sprite_sheet_shell.png
-    - assets/images/sprite_shark.png
+    - assets/images/sprite_sheet_bullet_fish.png
     - assets/images/health_bar_0.png
     - assets/images/health_bar_1.png
     - assets/images/health_bar_2.png
@@ -75,3 +75,4 @@ flutter:
     - assets/images/jellyfish.png
     - assets/images/bubble.png
     - assets/images/records.png
+    - assets/images/example_square.png
