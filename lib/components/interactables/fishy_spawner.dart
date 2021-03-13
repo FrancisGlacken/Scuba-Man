@@ -18,15 +18,13 @@ class FishySpawner extends Component with HasGameRef<ScubaGame> {
       fishy = Fishy.fromSpriteAnimation(Vector2.all(32), fishyAnim);
       fishy.x = gameRef.size.x + 32;
       fishy.y = rng.nextDouble() * gameRef.size.y;
-      gameRef.summonFishy(fishy); 
+      gameRef.add(fishy); 
     });
     timer.start();
   }
 
   @override
   Future<void> onLoad() async {
-
-    // TODO: implement onLoad
     fishyImage = await gameRef.images.load('fishy.png');
 
     fishyAnim = SpriteAnimation.fromFrameData(

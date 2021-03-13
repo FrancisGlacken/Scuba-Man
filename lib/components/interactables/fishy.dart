@@ -32,7 +32,7 @@ class Fishy extends SpriteAnimationComponent with HasGameRef<ScubaGame> {
     }
 
     if (this.toRect().overlaps(gameRef.scubaGuy.toRect())) {
-      gameRef.scoreState.updateScore(1); 
+      gameRef.updateScore(1); 
       gameRef.remove(this); 
     }
 

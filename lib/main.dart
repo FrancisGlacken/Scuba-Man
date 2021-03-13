@@ -1,4 +1,3 @@
-import 'dart:ui';
 //import 'package:hive/hive.dart';
 //import 'package:path_provider/path_provider.dart' as path_provider;
 import 'package:flame/game.dart';
@@ -7,17 +6,18 @@ import 'package:scuba_man/scuba_game.dart';
 import 'package:flutter/material.dart';
 import 'package:scuba_man/ui/health_widget.dart';
 import 'package:scuba_man/ui/high_score.dart';
+import 'package:scuba_man/ui/quit_button.dart';
 import 'package:scuba_man/ui/record.dart';
-import 'package:scuba_man/ui/records_image.dart';
+import 'package:scuba_man/ui/record_form.dart';
+import 'package:scuba_man/ui/records_button.dart';
 import 'package:scuba_man/ui/records_list.dart';
-import 'package:scuba_man/ui/start_image.dart';
+import 'package:scuba_man/ui/start_button.dart';
+import 'package:scuba_man/ui/title_image.dart';
+import 'package:scuba_man/utils/globals.dart' as globals;
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
-  //final appDocumentsDirectory = await path_provider.getApplicationDocumentsDirectory();
-  // Hive.init(appDocumentsDirectory.path);
-  // //await Hive.openBox("scuba_box");
 
   await SystemChrome.setEnabledSystemUIOverlays([]);
   await SystemChrome.setPreferredOrientations(
@@ -44,72 +44,34 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final healthBarState = new HealthBarState();
-  final scoreState = new HighScoreState();
-  var records = new List<Record>(); 
   ScubaGame _myGame;
+  final HighScoreState highScoreState = new HighScoreState(); 
 
-  Widget titleImageBuilder(BuildContext context, ScubaGame game) {
-    return Positioned(
-      top: 200,
-      left: 50,
-      child: Image.asset(
-        'assets/images/title.png',
-        // height: 80,
-        // width: 200,
-        fit: BoxFit.fill,
+  Widget _buildTitleScreen(BuildContext context, ScubaGame game) {
+    return Center(
+        child: Stack(
+      children: [
+        TitleImage(),
+        StartButton(game),
+        RecordsButton(game),
+      ],
+    ));
+  }
+
+  Widget _buildGameScreen(BuildContext context, ScubaGame game) {
+    return Center(
+      child: Stack(
+        children: [HealthBar(), HighScore(highScoreState), QuitButton(game)],
       ),
     );
   }
 
-  Widget startButtonBuilder(BuildContext context, ScubaGame game) {
-    return Positioned(
-      left: 150,
-      top: 380,
-      child: GestureDetector(
-        onTapUp: (TapUpDetails details) {
-          game.startGame();
-        },
-        child: StartImage(),
-      ),
-    );
+  Widget _buildRecordEntryScreen(BuildContext buildContext, ScubaGame game) {
+    return Center(child: Stack(children: [QuitButton(game), RecordForm(game)]));
   }
 
-  Widget recordButtonBuilder(BuildContext context, ScubaGame game) {
-    return Positioned(
-      left: 150,
-      top: 480,
-      child: GestureDetector(
-        onTapUp: (TapUpDetails details) {
-          game.toLeaderBoard();
-        },
-        child: RecordsImage(),
-      ),
-    );
-  }
-
-  Widget healthBarBuilder(BuildContext context, ScubaGame game) {
-    return HealthBar(healthBarState);
-  }
-
-  Widget highScoreBuilder(BuildContext context, ScubaGame game) {
-    return HighScore(scoreState);
-  }
-
-  Widget quitButtonBuilder(BuildContext context, ScubaGame game) {
-    return Positioned(
-      left: 20,
-      top: 20,
-      child: GestureDetector(
-          onTapDown: (TapDownDetails details) {
-            game.toTitle();
-          },
-          child: Image.asset('assets/images/quit_game.png')),
-    );
-  }
-
-  Widget leaderBoardBuilder(BuildContext buildContext) {
-
+  Widget _buildRecordsScreen(BuildContext buildContext, ScubaGame game) {
+    List<Record> records = [];
     records.addAll([
       Record(50, "FRN"),
       Record(45, "FRN"),
@@ -122,38 +84,36 @@ class _MyHomePageState extends State<MyHomePage> {
       Record(10, "JHG"),
       Record(5, "ASS")
     ]);
-    return Records(records); 
+    return Center(
+        child: Stack(
+      children: [Records(records), QuitButton(game)],
+    ));
   }
 
   @override
   Widget build(BuildContext context) {
-    _myGame = ScubaGame(healthBarState, scoreState);
+    _myGame = ScubaGame(myTapCallback);
     return Scaffold(
       body: _myGame == null
           ? const Text('Wait')
           : GameWidget<ScubaGame>(
               game: _myGame,
               overlayBuilderMap: {
-                'title_image': titleImageBuilder,
-                'start_button': startButtonBuilder,
-                'record_button': recordButtonBuilder,
-                'health_bar': healthBarBuilder,
-                'score': highScoreBuilder,
-                'quit_button': quitButtonBuilder
+                'title_screen': _buildTitleScreen,
+                'game_screen': _buildGameScreen,
+                'records_screen': _buildRecordsScreen,
+                'record_entry_screen': _buildRecordEntryScreen,
               },
-              initialActiveOverlays: const [
-                'title_image',
-                'start_button',
-                'record_button'
-              ],
+              initialActiveOverlays: const ['title_screen'],
             ),
     );
   }
 
-  // void newGame() {
-  //   setState(() {
-  //     _myGame = ScubaGame();
-  //     print('New game created');
-  //   });
-  // }
+
+  void myTapCallback() {
+    setState(() {
+      _myGame.score = _myGame.score + 1;
+      print('New game created');
+    });
+  }
 }

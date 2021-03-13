@@ -5,19 +5,18 @@ import 'package:flutter/material.dart';
 import 'package:scuba_man/scuba_game.dart';
 import 'package:vector_math/vector_math_64.dart';
 
-class Shark extends SpriteAnimationComponent with HasGameRef<ScubaGame> {
+class BulletFish extends SpriteAnimationComponent with HasGameRef<ScubaGame> {
   static const num BALL_RADIUS = 32.0;
   Random rng = new Random();
   Random rngCharge = new Random();
   double speedModifier;
   bool isDestroyed = false;
 
-  Shark.fromSpriteAnimation(Vector2 size, SpriteAnimation anim)
+  BulletFish.fromSpriteAnimation(Vector2 size, SpriteAnimation anim)
       : super.fromSpriteAnimation(size, anim);
 
   @override
   void update(double t) {
-    // TODO: implement update
     x = x - 50 * t;
 
     if (x < -100 ||

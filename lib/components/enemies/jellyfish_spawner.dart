@@ -35,7 +35,6 @@ class JellyfishSpawner extends Component with HasGameRef<ScubaGame> {
 
   @override
   Future<void> onLoad() async {
-    // TODO: implement onLoad
     jellyImage = await gameRef.images.load('sprite_sheet_jellyfish.png');
     return super.onLoad();
   }

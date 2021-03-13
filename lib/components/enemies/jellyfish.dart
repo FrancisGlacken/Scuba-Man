@@ -11,7 +11,6 @@ class JellyFish extends SpriteAnimationComponent with HasGameRef<ScubaGame> {
  
   @override
     void update(double t) {
-      // TODO: implement update
       x -= speedModifier * t;
       speedModifier -= .5;
       if (speedModifier <= 4) speedModifier = 80; 

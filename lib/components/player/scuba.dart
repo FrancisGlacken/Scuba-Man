@@ -1,8 +1,6 @@
 import 'dart:math';
 import 'dart:ui';
-
 import 'package:flame/components.dart';
-import 'package:scuba_man/components/interactables/fishy.dart';
 import 'package:scuba_man/scuba_game.dart';
 
 class Scuba extends SpriteAnimationComponent
@@ -16,7 +14,8 @@ class Scuba extends SpriteAnimationComponent
   Image scubaImage;
   Rect _rect;
 
-  Scuba.fromSpriteAnimation(size, animation) : super.fromSpriteAnimation(size, animation); 
+  Scuba.fromSpriteAnimation(size, animation)
+      : super.fromSpriteAnimation(size, animation);
 
   @override
   void update(double dt) {
@@ -24,7 +23,7 @@ class Scuba extends SpriteAnimationComponent
     if (_move) {
       moveFromAngle(dt);
     } else {
-      y += 20 * dt; 
+      y += 20 * dt;
     }
 
     if (x < 0)
@@ -35,7 +34,7 @@ class Scuba extends SpriteAnimationComponent
       y = 0;
     else if (y > gameRef.size.y - 32) y = gameRef.size.y - 32;
 
-    // if (this.toRect().overlaps() = true; 
+    // if (this.toRect().overlaps() = true;
     // gameRef.fishies.forEach((Fishy f) {
     //   if (f.toRect().overlaps(this.toRect())) {
     //     shouldRemove = true;
@@ -69,7 +68,6 @@ class Scuba extends SpriteAnimationComponent
       //Todo:
       currentSpeed = speed * event.intensity;
     }
-
   }
 
   void moveFromAngle(double dtUpdate) {

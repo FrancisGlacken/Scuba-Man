@@ -1,14 +1,12 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 
-class HealthBar extends StatefulWidget {
-  final HealthBarState state; 
-
-  HealthBar(this.state);
+class HealthBar extends StatefulWidget { 
+  HealthBar();
 
   @override
   HealthBarState createState() {
-    return state;
+    return HealthBarState();
   }
 
   
@@ -26,11 +24,11 @@ class HealthBarState extends State<HealthBar> {
     });
   }
 
-  resetHealth() {
-    setState(() {
-      hp = 3; 
-    });
-  }
+  // resetHealth() {
+  //   setState(() {
+  //     hp = 3; 
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {

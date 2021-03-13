@@ -29,7 +29,6 @@ class BubbleSpawner extends Component with HasGameRef<ScubaGame> {
 
   @override
   Future<void> onLoad() async {
-    // TODO: implement onLoad
     bubbleImage = await gameRef.images.load('bubble.png');
 
     bubbleAnim = SpriteAnimation.fromFrameData(

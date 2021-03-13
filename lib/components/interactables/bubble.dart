@@ -1,8 +1,5 @@
 import 'dart:math';
-import 'dart:ui';
 import 'package:flame/components.dart';
-
-
 
 import 'package:flutter/gestures.dart';
 import 'package:scuba_man/scuba_game.dart';
@@ -14,25 +11,26 @@ class Bubble extends SpriteAnimationComponent with HasGameRef<ScubaGame> {
   Random rngCharge = new Random();
   double posX, posY, acceleration;
   bool isDestroyed = false;
-  
-  Bubble.fromSpriteAnimation(Vector2 size, SpriteAnimation anim) : super.fromSpriteAnimation(size, anim);
+
+  Bubble.fromSpriteAnimation(Vector2 size, SpriteAnimation anim)
+      : super.fromSpriteAnimation(size, anim);
 
   @override
-    void update(double t) {
-      y = y - 50 * t; 
+  void update(double t) {
+    y = y - 50 * t;
 
-      if (y < gameRef.size.y) {
-        destroy(); 
-      }
-      super.update(t);
+    if (y < gameRef.size.y) {
+      destroy();
     }
+    super.update(t);
+  }
 
   void onTapDown(TapDownDetails d) {
     print("shell tapped");
   }
 
   void destroy() {
-    shouldRemove = true; 
+    shouldRemove = true;
   }
 
   void collisionCollect() {

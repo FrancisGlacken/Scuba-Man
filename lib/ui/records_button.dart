@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:scuba_man/ui/records_image.dart';
+import 'package:scuba_man/scuba_game.dart';
 
 class RecordsButton extends StatelessWidget {
-  final VoidCallback toScoreBoard;
-  RecordsButton(this.toScoreBoard);
+  final ScubaGame game; 
+  RecordsButton(this.game);
 
   @override
   Widget build(BuildContext context) {
@@ -12,9 +12,9 @@ class RecordsButton extends StatelessWidget {
       top: 480,
       child: GestureDetector(
         onTapUp: (TapUpDetails details) {
-          toScoreBoard();
+          game.toRecords();
         },
-        child: RecordsImage(),
+        child: Image.asset('assets/images/records.png'),
       ),
     );
   }

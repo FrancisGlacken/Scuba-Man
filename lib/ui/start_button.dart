@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-
-import 'start_image.dart';
+import 'package:scuba_man/scuba_game.dart';
 
 class StartButton extends StatelessWidget {
-  final VoidCallback startGame;
-  StartButton(this.startGame);
+  final ScubaGame game;
+  StartButton(this.game);
 
   @override
   Widget build(BuildContext context) {
@@ -13,9 +12,9 @@ class StartButton extends StatelessWidget {
       top: 380,
       child: GestureDetector(
         onTapUp: (TapUpDetails details) {
-          startGame();
+          game.toGame();
         },
-        child: StartImage(),
+        child: Image.asset('assets/images/start_game.png'),
       ),
     );
   }

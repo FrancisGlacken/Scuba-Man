@@ -2,48 +2,34 @@ import 'package:flame/components.dart';
 import 'package:flame/joystick.dart';
 import 'package:flame/gestures.dart';
 import 'package:flame/game.dart';
-import 'package:scuba_man/components/enemies/jellyfish.dart';
+import 'package:scuba_man/components/enemies/bullet_fish_spawner.dart';
 import 'package:scuba_man/components/enemies/jellyfish_spawner.dart';
-import 'package:scuba_man/components/enemies/shark.dart';
-import 'package:scuba_man/components/enemies/shark_spawner.dart';
 import 'package:scuba_man/components/interactables/bubble_spawner.dart';
 import 'package:scuba_man/components/interactables/fishy_spawner.dart';
-import 'package:scuba_man/components/interactables/shell.dart';
 import 'package:scuba_man/components/player/scuba.dart';
-import 'package:scuba_man/components/interactables/fishy.dart';
-import 'package:scuba_man/ui/health_widget.dart';
-import 'package:scuba_man/ui/last_score.dart';
 import 'package:scuba_man/ui/record.dart';
-import 'package:scuba_man/ui/high_score.dart';
 import 'package:flutter/material.dart' hide Image;
-import 'package:audioplayers/audio_cache.dart';
+import 'package:scuba_man/utils/globals.dart' as globals; 
 
 
 class ScubaGame extends BaseGame with MultiTouchDragDetector {
-  final jukebox = AudioCache();
   Scuba scubaGuy;
-  List<Fishy> fishies = new List<Fishy>();
-  List<Shell> shells = new List<Shell>();
-  List<JellyFish> jellies = new List<JellyFish>();
-  List<Shark> sharks = new List<Shark>();
-  List<Record> records = new List<Record>();
+  List<Record> records = [];
   List<String> bgImages = ['bg_ocean.png'];
   FishySpawner fishySpawner;
   JellyfishSpawner jellySpawner;
   BubbleSpawner bubbleSpawner;
-  SharkSpawner sharkSpawner;
-  HighScore scoreCard;
-  LastScore lastScoreCard;
-  HealthBarState healthBarState;
-  HighScoreState scoreState;
-  LastScoreState lastScoreState;
-  int health;
+  BulletFishSpawner bulletFishSpawner;
+  int playerHealth, score; 
   JoystickComponent joystick;
   SpriteAnimation scubaAnim, jellyAnim;
   bool scubaIsInvincible = false;
   ParallaxComponent parallax;
   Timer invincibilityTimer;
   TimerComponent invincibilityTimerComponent;
+  final VoidCallback myCallback; 
+
+  ScubaGame(this.myCallback);
 
   @override
   Future<void> onLoad() async {
@@ -59,7 +45,6 @@ class ScubaGame extends BaseGame with MultiTouchDragDetector {
       ),
     );
 
-    print("this is print");
     invincibilityTimer = new Timer(3, repeat: true, callback: () {
       scubaIsInvincible = false;
     });
@@ -82,8 +67,8 @@ class ScubaGame extends BaseGame with MultiTouchDragDetector {
     joystick.addObserver(scubaGuy);
     add(bubbleSpawner = BubbleSpawner());
     add(parallax);
-    initializeTitleScreen();
-    //jukebox.loop('audio/bgm/password_mmx.aac');
+    overlays.add('title_screen'); 
+    playerHealth = 3; 
   }
 
   @override
@@ -92,43 +77,30 @@ class ScubaGame extends BaseGame with MultiTouchDragDetector {
     super.onReceiveDrag(drag);
   }
 
-  ScubaGame(this.healthBarState, this.scoreState) {
-    health = 3;
-  }
-
-  void startGame() {
-    _clearTitleScreen();
+  void toGame() {
+    overlays.remove('title_screen'); 
+    overlays.add('game_screen'); 
     summonScuba();
-    //   playGameBGM();
-    overlays.add('health_bar');
-    overlays.add('quit_button');
-    overlays.add('score');
     add(fishySpawner = FishySpawner());
     add(jellySpawner = JellyfishSpawner());
-    add(sharkSpawner = SharkSpawner());
+    add(bulletFishSpawner = BulletFishSpawner());
     resetScore(); 
   }
 
-  void toLeaderBoard() {
-    _clearTitleScreen();
-    //overlays.add('record_list');
-    overlays.add('quit_button');
+  void toRecords() {
+    overlays.remove('title_screen'); 
+    overlays.add('records_screen'); 
   }
 
   void toTitle() {
-    overlays.remove('quit_button');
-    overlays.remove('health_bar');
+    overlays.remove('game_screen'); 
+    overlays.remove('records_screen');
+    if (overlays.isActive('record_entry_screen')) {
+      overlays.remove('record_entry_screen'); 
+    }
+    overlays.add('title_screen'); 
     removeAll(components);
     add(parallax);
-    resetHealth();
-    overlays.add('health_bar');
-    initializeTitleScreen();
-  }
-
-  void initializeTitleScreen() {
-    overlays.add('title_image');
-    overlays.add('start_button');
-    overlays.add('record_button');
   }
 
   void addHighScore() {
@@ -136,43 +108,19 @@ class ScubaGame extends BaseGame with MultiTouchDragDetector {
     records.removeLast();
   }
 
-  void _clearTitleScreen() {
-    overlays.remove('title_image');
-    overlays.remove('start_button');
-    overlays.remove('record_button');
-  }
-
   summonScuba() {
     add(scubaGuy);
     add(joystick);
   }
 
-  summonFishy(Fishy fish) {
-    fishies.add(fish);
-    add(fish);
-  }
-
-  // addShell(Shell shell) {
-  //   shells.add(shell);
-  //   add(shell);
-  // }
-
-  // addJelly(JellyFish jellyFish) {
-  //   jellies.add(jellyFish);
-  //   add(jellyFish);
-  // }
-
-  // addShark(Shark shark) {
-  //   sharks.add(shark);
-  //   add(shark);
-  // }
-
   updateScore(int points) {
-    scoreState.updateScore(points);
+    globals.score = globals.score + points; 
+    myCallback(); 
   }
 
   resetScore() {
-    scoreState.resetScore();
+    globals.score = 0; 
+    //scoreState.resetScore();
   }
 
   damageHealth(int damage) {
@@ -180,22 +128,20 @@ class ScubaGame extends BaseGame with MultiTouchDragDetector {
       print("Scubaguy is invincible to this blow!");
     } else {
       scubaIsInvincible = true;
-      add((TimerComponent(invincibilityTimer..start()))); 
-      health += damage;
-      healthBarState.updateHealth(health);
-      if (health < 1) {
-        gameOver();
+      add((invincibilityTimerComponent = TimerComponent(invincibilityTimer..start()))); 
+      playerHealth += damage;
+      //healthBarState.updateHealth(playerHealth);
+      if (playerHealth < 3) {
+        remove(invincibilityTimerComponent); 
+        _gameOver();
       }
     }
   }
 
-  resetHealth() {
-    health = 3;
-    healthBarState.resetHealth();
-  }
-
-  gameOver() {
+  _gameOver() {
+    components.remove(scubaGuy); 
+    components.remove(joystick); 
+    overlays.add('record_entry_screen');
     //saveScoreAndGiveSplashScreen();
-    toTitle();
   }
 }

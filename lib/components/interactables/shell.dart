@@ -16,9 +16,9 @@ class Shell extends SpriteAnimationComponent {
 
   Shell(Vector2 size, SpriteAnimation animation) : super();
 
-  void _loadImages() {
-    images.load("shell", "sprite_sheet_shell.png");
-  }
+  // void _loadImages() {
+  //   images.load("shell", "sprite_sheet_shell.png");
+  // }
 
   void collisionCollect() {
     // gameRef.uiState.updateScoreForShell();
@@ -29,12 +29,12 @@ class Shell extends SpriteAnimationComponent {
     print("shell tapped");
   }
 
-  @override
-  bool destroy() {
-    return isDestroyed;
-  }
+  // @override
+  // bool destroy() {
+  //   return isDestroyed;
+  // }
 
-  void destroyed() {
-    isDestroyed = true; 
-  }
+  // void destroyed() {
+  //   isDestroyed = true; 
+  // }
 }
