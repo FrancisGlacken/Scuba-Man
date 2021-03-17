@@ -12,8 +12,12 @@ class Bubble extends SpriteAnimationComponent with HasGameRef<ScubaGame> {
   double posX, posY, acceleration;
   bool isDestroyed = false;
 
-  Bubble.fromSpriteAnimation(Vector2 size, SpriteAnimation anim)
-      : super.fromSpriteAnimation(size, anim);
+  Bubble(bubbleAnim) {
+    animation = bubbleAnim; 
+    size = Vector2.all(32); 
+    x = rng.nextDouble() * gameRef.size.x;
+    y = gameRef.size.y + 32;
+  }
 
   @override
   void update(double t) {

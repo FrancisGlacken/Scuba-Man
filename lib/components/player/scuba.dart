@@ -14,8 +14,15 @@ class Scuba extends SpriteAnimationComponent
   Image scubaImage;
   Rect _rect;
 
-  Scuba.fromSpriteAnimation(size, animation)
-      : super.fromSpriteAnimation(size, animation);
+  // Scuba.fromSpriteAnimation(size, animation)
+  //     : super.fromSpriteAnimation(size, animation);
+
+  Scuba(scubaAnim) : super() {
+    animation = scubaAnim; 
+    size = Vector2(70, 35); 
+    x = size.x / 2;
+    y = size.y / 2;
+  }
 
   @override
   void update(double dt) {
@@ -62,9 +69,9 @@ class Scuba extends SpriteAnimationComponent
 
   @override
   void joystickChangeDirectional(JoystickDirectionalEvent event) {
-    _move = event.directional != JoystickMoveDirectional.IDLE;
+    _move = event.directional != JoystickMoveDirectional.idle;
     if (_move) {
-      radAngle = event.radAngle;
+      radAngle = event.angle;
       //Todo:
       currentSpeed = speed * event.intensity;
     }

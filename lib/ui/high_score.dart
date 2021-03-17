@@ -1,20 +1,18 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:scuba_man/utils/globals.dart' as globals;
 
 class HighScore extends StatefulWidget {
-  final HighScoreState state; 
-  HighScore(this.state);
-  
+  final HighScoreState scoreState;
+  HighScore(this.scoreState);
 
   @override
   HighScoreState createState() {
-    return state;
+    return scoreState;
   }
 }
 
 class HighScoreState extends State<HighScore> {
-  int _score = globals.score; 
+  int score = 0;
 
   HighScoreState();
 
@@ -26,11 +24,23 @@ class HighScoreState extends State<HighScore> {
         child: Align(
           alignment: Alignment.topCenter,
           child: Text(
-            _score.toString(),
+            score.toString(),
             style: TextStyle(fontSize: 24, color: Colors.green[300]),
           ),
         ),
       ),
     );
+  }
+
+  updateScore(points) {
+    setState(() {
+      score += points;
+    });
+  }
+
+  resetScore() {
+    setState(() {
+      score = 0;
+    });
   }
 }

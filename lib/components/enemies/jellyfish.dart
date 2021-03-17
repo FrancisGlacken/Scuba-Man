@@ -7,7 +7,11 @@ class JellyFish extends SpriteAnimationComponent with HasGameRef<ScubaGame> {
   Random rng = new Random();
   double speedModifier = 80;
 
-  JellyFish.fromSpriteAnimation(size, animation) : super.fromSpriteAnimation(size, animation);
+  JellyFish(jellyAnim) {
+    animation = jellyAnim; 
+    x = gameRef.size.x + 32;
+    y = (gameRef.size.y * rng.nextDouble()) + 50;
+  }
  
   @override
     void update(double t) {
@@ -22,7 +26,7 @@ class JellyFish extends SpriteAnimationComponent with HasGameRef<ScubaGame> {
       }
 
       if (this.toRect().overlaps(gameRef.scubaGuy.toRect())) {
-        gameRef.damageHealth(-1); 
+        gameRef.damageHealth(); 
       }
 
       super.update(t); 

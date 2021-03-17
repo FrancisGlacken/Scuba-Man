@@ -3,7 +3,6 @@ import 'package:flame/components.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:scuba_man/scuba_game.dart';
-import 'package:vector_math/vector_math_64.dart';
 
 class BulletFish extends SpriteAnimationComponent with HasGameRef<ScubaGame> {
   static const num BALL_RADIUS = 32.0;
@@ -12,9 +11,14 @@ class BulletFish extends SpriteAnimationComponent with HasGameRef<ScubaGame> {
   double speedModifier;
   bool isDestroyed = false;
 
-  BulletFish.fromSpriteAnimation(Vector2 size, SpriteAnimation anim)
-      : super.fromSpriteAnimation(size, anim);
+  BulletFish(bulletAnim) {
+    animation = bulletAnim; 
+    size = Vector2.all(32); 
+    x = gameRef.size.x;
+    y = gameRef.size.y * rng.nextDouble();
+  }
 
+  
   @override
   void update(double t) {
     x = x - 50 * t;
@@ -27,7 +31,7 @@ class BulletFish extends SpriteAnimationComponent with HasGameRef<ScubaGame> {
     }
 
     if (this.toRect().overlaps(gameRef.scubaGuy.toRect())) {
-      gameRef.damageHealth(-1);
+      gameRef.damageHealth();
     }
     super.update(t);
   }

@@ -20,7 +20,7 @@ dependencies:
   flutter:
     sdk: flutter
 
-  flame: ^1.0.0-rc6
+  flame: ^1.0.0-rc8
   rxdart: ^0.25.0
   audioplayers: ^0.17.3
 

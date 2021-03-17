@@ -15,9 +15,7 @@ class FishySpawner extends Component with HasGameRef<ScubaGame> {
 
   FishySpawner() {
     timer = Timer(1, repeat: true, callback: () {
-      fishy = Fishy.fromSpriteAnimation(Vector2.all(32), fishyAnim);
-      fishy.x = gameRef.size.x + 32;
-      fishy.y = rng.nextDouble() * gameRef.size.y;
+      fishy = Fishy(fishyAnim);
       gameRef.add(fishy); 
     });
     timer.start();

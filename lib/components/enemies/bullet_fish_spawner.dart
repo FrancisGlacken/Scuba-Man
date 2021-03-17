@@ -24,9 +24,8 @@ class BulletFishSpawner extends Component with HasGameRef<ScubaGame> {
           loop: true,
         ),
       );
-      bulletFish = BulletFish.fromSpriteAnimation(Vector2.all(64), sharkAnim);
-      bulletFish.x = gameRef.size.x;
-      bulletFish.y = gameRef.size.y * rng.nextDouble();
+      bulletFish = BulletFish(sharkAnim);
+      
       gameRef.add(bulletFish);
     });
     timer.start();

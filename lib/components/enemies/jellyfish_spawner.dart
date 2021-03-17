@@ -25,9 +25,7 @@ class JellyfishSpawner extends Component with HasGameRef<ScubaGame> {
           loop: true,
         ),
       );
-      jelly = JellyFish.fromSpriteAnimation(Vector2.all(32), jellyAnim);
-      jelly.x = gameRef.size.x + 32;
-      jelly.y = (gameRef.size.y * rng.nextDouble()) + 50;
+      jelly = JellyFish(jellyAnim);
       gameRef.add(jelly);
     });
     timer.start();

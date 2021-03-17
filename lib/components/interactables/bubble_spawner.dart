@@ -19,9 +19,7 @@ class BubbleSpawner extends Component with HasGameRef<ScubaGame> {
 
   BubbleSpawner() {
     timer = Timer(1, repeat: true, callback: () {
-      bubble = Bubble.fromSpriteAnimation(Vector2.all(32), bubbleAnim);
-      bubble.x = rng.nextDouble() * gameRef.size.x;
-      bubble.y = gameRef.size.y + 32;
+      bubble = Bubble(bubbleAnim);
       gameRef.add(bubble);
     });
     timer.start();

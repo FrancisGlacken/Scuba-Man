@@ -9,7 +9,7 @@ class QuitButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Positioned(
       left: 20,
-      top: 100,
+      top: 20,
       child: GestureDetector(
           onTapDown: (TapDownDetails details) {
             game.toTitle();

@@ -1,8 +1,6 @@
 import 'dart:math';
 
 import 'package:flame/components.dart';
-import 'package:flutter/gestures.dart';
-import 'package:flutter/material.dart';
 import 'package:scuba_man/scuba_game.dart';
 import 'package:scuba_man/utils/utils.dart';
 import 'package:vector_math/vector_math_64.dart';
@@ -15,8 +13,12 @@ class Fishy extends SpriteAnimationComponent with HasGameRef<ScubaGame> {
 
   ImagesLoader images = new ImagesLoader();
 
-  Fishy.fromSpriteAnimation(Vector2 size, SpriteAnimation anim)
-      : super.fromSpriteAnimation(size, anim);
+  Fishy(fishAnim) {
+    animation = fishAnim;
+    size = Vector2.all(32); 
+    x = gameRef.size.x + 32;
+    y = rng.nextDouble() * gameRef.size.y;
+  }
 
   @override
   void update(double t) {
@@ -37,14 +39,5 @@ class Fishy extends SpriteAnimationComponent with HasGameRef<ScubaGame> {
     }
 
     super.update(t);
-  }
-
-  void onTapDown(TapDownDetails d) {
-    print("fishy tapped");
-  }
-
-  void impact() {
-    //gameRef.updateScore(1);
-    remove();
   }
 }

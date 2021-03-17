@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:scuba_man/scuba_game.dart';
+import 'package:scuba_man/utils/globals.dart' as globals;
 
 class RecordForm extends StatefulWidget {
   final ScubaGame game; 
@@ -46,7 +47,7 @@ class RecordFormState extends State<RecordForm> {
 
   Widget _buildScore() {
     return Text(
-            game.score.toString(),
+            globals.hp.toString(),
             style: TextStyle(
                 fontSize: 24,
                 color: Colors.green[300]),

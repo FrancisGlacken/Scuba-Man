@@ -7,9 +7,10 @@ import 'package:scuba_man/components/enemies/jellyfish_spawner.dart';
 import 'package:scuba_man/components/interactables/bubble_spawner.dart';
 import 'package:scuba_man/components/interactables/fishy_spawner.dart';
 import 'package:scuba_man/components/player/scuba.dart';
+import 'package:scuba_man/ui/game_ui.dart';
 import 'package:scuba_man/ui/record.dart';
 import 'package:flutter/material.dart' hide Image;
-import 'package:scuba_man/utils/globals.dart' as globals; 
+import 'package:scuba_man/utils/globals.dart' as globals;
 
 
 class ScubaGame extends BaseGame with MultiTouchDragDetector {
@@ -20,16 +21,16 @@ class ScubaGame extends BaseGame with MultiTouchDragDetector {
   JellyfishSpawner jellySpawner;
   BubbleSpawner bubbleSpawner;
   BulletFishSpawner bulletFishSpawner;
-  int playerHealth, score; 
   JoystickComponent joystick;
   SpriteAnimation scubaAnim, jellyAnim;
   bool scubaIsInvincible = false;
   ParallaxComponent parallax;
   Timer invincibilityTimer;
   TimerComponent invincibilityTimerComponent;
-  final VoidCallback myCallback; 
+  final GameUIState uiState; 
 
-  ScubaGame(this.myCallback);
+
+  ScubaGame(this.uiState);
 
   @override
   Future<void> onLoad() async {
@@ -49,7 +50,7 @@ class ScubaGame extends BaseGame with MultiTouchDragDetector {
       scubaIsInvincible = false;
     });
 
-    joystick = JoystickComponent(
+    joystick = JoystickComponent(gameRef: this,
       directional: JoystickDirectional(
           margin: EdgeInsets.only(left: size.x * .8, bottom: size.y * .1)),
     );
@@ -61,44 +62,29 @@ class ScubaGame extends BaseGame with MultiTouchDragDetector {
       images: images,
     );
 
-    scubaGuy = Scuba.fromSpriteAnimation(Vector2(70, 35), scubaAnim);
-    scubaGuy.x = size.x / 2;
-    scubaGuy.y = size.y / 2;
+    scubaGuy = Scuba(scubaAnim);
     joystick.addObserver(scubaGuy);
     add(bubbleSpawner = BubbleSpawner());
     add(parallax);
     overlays.add('title_screen'); 
-    playerHealth = 3; 
-  }
-
-  @override
-  void onReceiveDrag(DragEvent drag) {
-    joystick.onReceiveDrag(drag);
-    super.onReceiveDrag(drag);
   }
 
   void toGame() {
-    overlays.remove('title_screen'); 
-    overlays.add('game_screen'); 
+    uiState.toGameScreen(); 
     summonScuba();
     add(fishySpawner = FishySpawner());
     add(jellySpawner = JellyfishSpawner());
     add(bulletFishSpawner = BulletFishSpawner());
+    add(bubbleSpawner = BubbleSpawner()); 
     resetScore(); 
   }
 
   void toRecords() {
-    overlays.remove('title_screen'); 
-    overlays.add('records_screen'); 
+    uiState.toRecordsScreen(); 
   }
 
   void toTitle() {
-    overlays.remove('game_screen'); 
-    overlays.remove('records_screen');
-    if (overlays.isActive('record_entry_screen')) {
-      overlays.remove('record_entry_screen'); 
-    }
-    overlays.add('title_screen'); 
+    uiState.toTitleScreen(); 
     removeAll(components);
     add(parallax);
   }
@@ -114,29 +100,32 @@ class ScubaGame extends BaseGame with MultiTouchDragDetector {
   }
 
   updateScore(int points) {
-    globals.score = globals.score + points; 
-    myCallback(); 
+    uiState.updateScore(points); 
   }
 
   resetScore() {
-    globals.score = 0; 
-    //scoreState.resetScore();
+    uiState.resetScore();
   }
 
-  damageHealth(int damage) {
+  damageHealth() {
     if (scubaIsInvincible) {
       print("Scubaguy is invincible to this blow!");
     } else {
       scubaIsInvincible = true;
       add((invincibilityTimerComponent = TimerComponent(invincibilityTimer..start()))); 
-      playerHealth += damage;
-      //healthBarState.updateHealth(playerHealth);
-      if (playerHealth < 3) {
+      uiState.damageHealth();
+      if (globals.hp < 1) {
         remove(invincibilityTimerComponent); 
         _gameOver();
       }
     }
   }
+
+  resetHealth() {
+    uiState.resetHealth(); 
+  }
+
+  
 
   _gameOver() {
     components.remove(scubaGuy); 
