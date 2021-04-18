@@ -17,9 +17,12 @@ class Scuba extends SpriteAnimationComponent
   // Scuba.fromSpriteAnimation(size, animation)
   //     : super.fromSpriteAnimation(size, animation);
 
-  Scuba(scubaAnim) : super() {
-    animation = scubaAnim; 
-    size = Vector2(70, 35); 
+  Scuba(scubaImage)
+      : super.fromFrameData(
+            scubaImage,
+            SpriteAnimationData.sequenced(
+                amount: 11, stepTime: 0.1, textureSize: Vector2(128, 64))) {
+    size = Vector2(70, 35);
     x = size.x / 2;
     y = size.y / 2;
   }

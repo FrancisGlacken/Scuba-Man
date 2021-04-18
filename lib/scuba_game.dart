@@ -13,7 +13,8 @@ import 'package:flutter/material.dart' hide Image;
 import 'package:scuba_man/utils/globals.dart' as globals;
 
 
-class ScubaGame extends BaseGame with MultiTouchDragDetector {
+class ScubaGame extends BaseGame with HasDraggableComponents
+ {
   Scuba scubaGuy;
   List<Record> records = [];
   List<String> bgImages = ['bg_ocean.png'];
@@ -62,7 +63,7 @@ class ScubaGame extends BaseGame with MultiTouchDragDetector {
       images: images,
     );
 
-    scubaGuy = Scuba(scubaAnim);
+    scubaGuy = Scuba(scubaImage);
     joystick.addObserver(scubaGuy);
     add(bubbleSpawner = BubbleSpawner());
     add(parallax);
@@ -124,8 +125,6 @@ class ScubaGame extends BaseGame with MultiTouchDragDetector {
   resetHealth() {
     uiState.resetHealth(); 
   }
-
-  
 
   _gameOver() {
     components.remove(scubaGuy); 
